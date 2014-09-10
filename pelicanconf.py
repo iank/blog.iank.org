@@ -19,6 +19,7 @@ TRANSLATION_FEED_ATOM = None
 
 # Blogroll
 LINKS = (('Blog', 'http://blog.iank.org/'),
+         ('Contact', 'http://blog.iank.org/pages/contact.html'),
          ('Home', 'http://iank.org/'),
 #         ('Résumé', 'http://iank.org/kilgore_resume.pdf'),
          ('Projects', 'http://iank.org/projects.html'),)
