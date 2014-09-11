@@ -35,4 +35,4 @@ DEFAULT_PAGINATION = 10
 
 THEME = "/home/ian/blog/theme/"
 MD_EXTENSIONS = ['codehilite', 'extra', 'footnotes']
-STATIC_PATHS = ['images']
+STATIC_PATHS = ['images', 'pdf']
