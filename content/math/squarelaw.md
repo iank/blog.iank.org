@@ -1,6 +1,6 @@
 Title: Inverse-Square Laws: A Physical Consequence of the Geometry of Space
 Date: 2014-09-10 16:39
-Tags: physics, geometry, kant
+Tags: physics, geometry, kant, math
 Summary: The ubiquitous inverse-square laws in physics are a necessary consequence of the three-dimensional nature of space. Barrow shows that Kant was the first to recognize the geometrical connection, although he got it backwards. I explain the geometrical reason for inverse-square laws and follow Kant's argument. Thanks, Kant. Thant.
 
 John D. Barrow's [*The Constants of Nature*](https://www.goodreads.com/book/show/18926355-the-constants-of-nature?ac=1)[^barrow] mentions that Kant may have been the first to notice a connection between the dimensionality of space and physical inverse-square laws, such as [Newton's law of universal gravitation](http://en.wikipedia.org/wiki/Newton's_law_of_universal_gravitation):
