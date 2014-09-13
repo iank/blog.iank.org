@@ -1,5 +1,9 @@
 {% extends "base.html" %}
 
+{% block windowtitle %}
+{{ page.title }} - {{ super() }}
+{% endblock windowtitle %}
+
 {% block content %}
 <div class="row">
 	<div class="small-12 columns">

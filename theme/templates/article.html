@@ -1,5 +1,9 @@
 {% extends "base.html" %}
 
+{% block windowtitle %}
+{{ article.title }} - {{ super() }}
+{% endblock windowtitle %}
+
 {% block content %}
 <article>
 	<h2>{{ article.title }}</h2>
