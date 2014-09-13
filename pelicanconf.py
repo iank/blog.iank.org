@@ -17,6 +17,9 @@ FEED_ALL_ATOM = None
 CATEGORY_FEED_ATOM = None
 TRANSLATION_FEED_ATOM = None
 
+FEED_RSS = 'feeds/all.rss.xml'
+CATEGORY_FEED_RSS = 'feeds/%s.rss.xml'
+
 # Blogroll
 LINKS = (('Blog', 'http://blog.iank.org/'),
          ('Contact', 'http://blog.iank.org/pages/contact.html'),
@@ -35,4 +38,7 @@ DEFAULT_PAGINATION = 10
 
 THEME = "/home/ian/blog/theme/"
 MD_EXTENSIONS = ['codehilite', 'extra', 'footnotes']
-STATIC_PATHS = ['images', 'pdf']
+STATIC_PATHS = ['images', 'pdf', 'extra']
+EXTRA_PATH_METADATA = {
+    'extra/robots.txt': {'path': 'robots.txt'},
+}
