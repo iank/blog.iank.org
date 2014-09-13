@@ -9,7 +9,7 @@ John D. Barrow's [*The Constants of Nature*](https://www.goodreads.com/book/show
 F = G\frac{m_1 m_2}{r^2}
 \end{equation}
 
-This is interesting. Inverse-square laws are [everywhere](http://en.wikipedia.org/wiki/Inverse-square_law#Occurrences), and 3D space really does appear to be special[^ehrenfest]. Among other things, [stable orbits depend on it](http://en.wikipedia.org/wiki/Bertrand's_theorem). I first encountered, or at least bothered to think about, the geometric reason for inverse-square laws in an electrodynamics and antenna theory lecture on [free-space path loss (FSPL)](http://en.wikipedia.org/wiki/Free-space_path_loss), which says that the power of a received signal in free space also has a $r^{-2}$ distance dependence.
+This is interesting. Inverse-square laws are [everywhere](http://en.wikipedia.org/wiki/Inverse-square_law#Occurrences), and 3D space really does appear to be special[^ehrenfest]. Among other things, [stable orbits depend on it](http://en.wikipedia.org/wiki/Bertrand's_theorem). I first encountered, or at least noticed, the geometric reason for inverse-square laws in an electrodynamics and antenna theory lecture on [free-space path loss (FSPL)](http://en.wikipedia.org/wiki/Free-space_path_loss), which says that the power of a received signal in free space also has a $r^{-2}$ distance dependence.
 
 It is easy to understand this by picturing a point source radiating equally in all directions, i.e. spherically. Spherical symmetry is common in nature. At a distance $r$, the power is "spread out" over the surface of an imaginary sphere having area $4\pi r^2$. A similar argument can be made for gravity.
 
