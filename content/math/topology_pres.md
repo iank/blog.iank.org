@@ -8,9 +8,11 @@ Summary: I gave a talk at the [NCSU Linux Users' Group](http://lug.ncsu.edu/) on
 <p>
 </p>
 
-Yesterday I gave a talk at the [NCSU Linux Users' Group](http://lug.ncsu.edu) and I've posted the slides and a video here. Not captured in the audio was, after the talk, an impromptu lecture about Hilbert's infinite hotel and then an audience member came up to talk about the expectation of the Poisson distribution. So it was a good time!
+Yesterday I gave a talk at the [NCSU Linux Users' Group](http://lug.ncsu.edu) and I've posted the slides and a video here. Not captured in the audio was, after the talk, an impromptu lecture about Hilbert's infinite hotel and then [Jim Witschey](http://twitter.com/mambocab) came up to talk about the expectation of the Poisson distribution. So it was a good time!
 
 [Slides (PDF)](http://iank.org/ncsulug_fa14.pdf)
+
+[References (HTML)](http://iank.org/ncsulug_fa14/ncsulug_fa14.html)
 
 Here's the original abstract of the talk:
 
