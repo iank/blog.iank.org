@@ -2,6 +2,8 @@ Title: Programmatically-Generated LaTeX Sieve of Eratosthenes
 Date: 2014-09-11 01:26
 Tags: LaTeX, jokes, math
 
+<!-- did a lightning talk about this: https://www.youtube.com/watch?v=mTfw3useXro#t=1h28m40s -->
+
 (tl;dr: see [PDF here](/pdf/sieve.pdf)). For a top-secret joke project I am learning to program in LaTeX as if it were a general-purpose language. LaTeX is my favourite way to write scientific papers, but no one should use it for programmatic logic. Along the way I have implemented a [Sieve of Eratosthenes](http://en.wikipedia.org/wiki/Sieve_of_Eratosthenes), a well-known algorithm for finding prime numbers. The natural typesetting ability of LaTeX allows me to easily generate an intuitive representation of the inner working of the algorithm.
 
 <img style="float: center" src="/images/sieve_100.png" alt="Sieve of Eratosthenes">
