@@ -2,7 +2,6 @@ Title: Playing Capitals with OpenCV and Python
 Date: 2015-06-04 17:05
 Tags: computer math, hexagons, capitals
 Summary: On Monday evening I had dinner with a friend who showed me the game [Capitals](https://itunes.apple.com/us/app/capitals-free-word-battle/id968456900) and suggested it might be interesting to play it programmatically. tl;dr: I spent the last 18-20 working hours doing that [(Github link)](https://github.com/iank/capitals-solver)
-Status: draft
 
 On Monday evening I had dinner with my friend Alysia Promislow, who showed me the game [Capitals](https://itunes.apple.com/us/app/capitals-free-word-battle/id968456900) and suggested it might be interesting to play it programmatically.
 
@@ -19,7 +18,7 @@ I spent Tuesday afternoon writing a Python script to decode the game state from 
 
 It takes an RGB image, such as:
 
-[![RGB screenshot](/images/capitals_ex.png)
+![RGB screenshot](/images/capitals_ex.png)
 
 Next, it greyscales and runs the [Canny edge detector](http://docs.opencv.org/modules/imgproc/doc/feature_detection.html?highlight=canny#canny) to produce:
 
