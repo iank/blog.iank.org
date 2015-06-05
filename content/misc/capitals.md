@@ -53,7 +53,7 @@ On Wednesday afternoon I wrote code to score candidate words. It is trivial to f
 
 I score candidate word choices by counting the length of the word, number of tiles it will add to player territory, number of tiles it will remove from enemy territory, and whether one of those tiles is the enemy capital (thus granting the player an extra turn, usually allowing a win).[^vars]
 
-I determine connectedness of a candidate word by considering the list of all currently-owned tiles. For each of these, I check each of the six adjacent tiles. If it is part of the candidate word, add to the list of owned tiles, and note that I've visited it. Iterate until I am done with the list of owned tiles. The result is a list of all connected tiles in the candidate word, which I then use to check enemy player adjacency. For each candidate word a vector of these score variables is generated, and I do some rudimentary sorting to produce a suggestion, such as:
+I determine connectedness of a candidate word by considering the list of all currently-owned tiles. For each of these, I check each of the six adjacent tiles. If it is part of the candidate word, add to the list of owned tiles, and note that I've visited it. Iterate until I am done with the list of owned tiles. The result is a list of all connected tiles in the candidate word, which I then use to check enemy player adjacency. For each candidate word a vector of these score variables is generated, and I do some rudimentary sorting to produce a suggestion, such as this suggestion for the red player:[^word]
 
     word:    retrenching, territory gain   10, enemy territory loss    6
     word:    incremented, territory gain   10, enemy territory loss    5
@@ -69,4 +69,6 @@ I determine connectedness of a candidate word by considering the list of all cur
 
 [^game]: I'm terrible at this game, though. Scrabble too.
 
-[^vars]: There are other variables to consider such as protecting one's own capital, avoiding being the player to bridge the gap, and positioning (ie gaining tiles in the center is more important than gaining isolated tiles which have to path to the enemy player). My thought is to construct a feature vector with these variables, weight them by some vector $\alpha$, and use a genetic algorithm to pit several of these automated players against each other in order to learn $\alpha$. I may never get around to it.
+[^vars]: There are other variables to consider such as protecting one's own capital, avoiding being the player to bridge the gap, and positioning (ie gaining tiles in the center is more important than gaining isolated tiles which have no path to the enemy player). My thought is to construct a feature vector with these variables, weight them by some vector $\alpha$, and use a genetic algorithm to pit several of these automated players against each other in order to learn $\alpha$. I may never get around to it.
+
+[^word]: Although here I'd rather play "incremented" in order to gain the 'm' tile, protecting the red capital.
