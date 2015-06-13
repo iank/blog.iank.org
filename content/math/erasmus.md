@@ -1,6 +1,6 @@
 Title: A Localized Path-Finding Genetic Algorithm
 Date: 2013-08-17 19:30
-Tags: computer math, genetic algorithm, models
+Tags: computer math, genetic algorithm, models, machine learning
 Summary: I implement a genetic algorithm which attempts to find the lowest-cost path across some weighted map using only local information.
 
 ### Localized Path-Finding
