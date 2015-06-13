@@ -20,10 +20,10 @@ One thousand CAPTCHA images were collected. Each image is 8-bit 120x50 grayscale
 
 #### Segmentation
 
-[![Segmented CAPTCHA](/images/rmbc/segment4_t.png "Segmented CAPTCHA")](/images/rmbc/segment_4.png)
-[![Segmented CAPTCHA](/images/rmbc/segment5_t.png "Segmented CAPTCHA")](/images/rmbc/segment_5.png)
-[![Segmented CAPTCHA](/images/rmbc/segment6_t.png "Segmented CAPTCHA")](/images/rmbc/segment_6.png)
-[![Segmented CAPTCHA](/images/rmbc/segment7_t.png "Segmented CAPTCHA")](/images/rmbc/segment_7.png)
+[![Segmented CAPTCHA](/images/rmbc/segment4_t.png "Segmented CAPTCHA")](/images/rmbc/segment4.png)
+[![Segmented CAPTCHA](/images/rmbc/segment5_t.png "Segmented CAPTCHA")](/images/rmbc/segment5.png)
+[![Segmented CAPTCHA](/images/rmbc/segment6_t.png "Segmented CAPTCHA")](/images/rmbc/segment6.png)
+[![Segmented CAPTCHA](/images/rmbc/segment7_t.png "Segmented CAPTCHA")](/images/rmbc/segment7.png)
 
 Reddit's CAPTCHA algorithm employs a distorted grid which intercepts and joins each character in an attempt to prevent easy segmentation. However, these images are 8-bit rather than binary, and the anti-segmentation feature is rendered at a lower intensity than the letters themselves. This is the key weakness in this CAPTCHA algorithm.
 
