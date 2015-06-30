@@ -15,7 +15,8 @@ Summary: TODO
     - [Entropy (H(Y=1|X), H(X|Y=1))](#entropy)
     - [Redundancy (K-L divergence)](#redundancy)
     - [Greedy hill-climbing & pruning](#hill)
-- [Result/Summary](#results)
+- [Results](#results)
+- [Summary](#summary)
 - [References/Notes](#refs)
 
 <a name="background"></a>
@@ -28,6 +29,10 @@ Although my segmentation is consistent, presenting Tesseract with a single chara
 Also, Tesseract is a powerful OCR engine, but I only need single-character recognition. Invoking Tesseract for each tile in a screenshot takes a significant portion of the total runtime of [capitals-solver](https://github.com/iank/capitals-solver).
 
 I decided to write my own classifier for the relatively trivial problem of classifying consistently-rendered single character tiles. This quickly became an exploration of [feature selection](https://en.wikipedia.org/wiki/Feature_selection) techniques. Later, I will explore the application of my model to more difficult problems, such as recognition of multiple fonts or handwritten letters.
+
+All of the code used is available on [github/receptor-ocr](https://github.com/iank/receptor-ocr). I have tried to make note of when I used different revisions of the same code in this article.
+
+I demonstrate a complete walkthrough of the most effictive method in the [README](http://TODO) and in [a subsequent post on the MNIST handwritten digit dataset](http://TODO).
 
 <a name="data"></a>
 ### Dataset
@@ -93,7 +98,7 @@ Example features for character recognition could be:
 - statistics gleaned from approximating edges as lower-degree polygons
 - etc
 
-As an interesting compromise between manual feature design and automatic feature extraction, I found this [codeproject post by Andrew Kirillov](http://www.codeproject.com/Articles/11285/Neural-Network-OCR), who uses "receptors" (scroll to "Another Approach").
+As an interesting compromise between manual feature design and automatic feature extraction, I found this [codeproject post by Andrew Kirillov](http://www.codeproject.com/Articles/11285/Neural-Network-OCR), who uses "receptors" (scroll to "Another Approach")[^receptors].
 
 The idea is to project the same set of small line segments on each image, and generate a vector of receptor activation (crossing the letter / not crossing the letter) for each image.
 
@@ -105,7 +110,7 @@ Midpoints have a Gaussian distribution $N(\mu = [0.5, 0.5], \sigma^2 = 0.2)$, an
 
 At first, I tried to improve upon the receptor model by making receptor activation a real number (the average pixel intensity across the receptor) rather than a binary activation.
 
-With revision [2fb264a9a0e759eaa06e0c0a9cc263c655f78f17](https://github.com/iank/receptor-ocr/tree/2fb264a9a0e759eaa06e0c0a9cc263c655f78f17) I generated 2500 receptors using gen_receptors.py, and produced a CSV using gen_training_csv.py.
+With [gen_receptors.py](https://github.com/iank/receptor-ocr/blob/master/gen_receptors.py) I generated 2500 receptors, and produced a CSV using [gen_training_csv.py](https://github.com/iank/receptor-ocr/blob/master/gen_training_csv.py).
 
 Test error obtained with LSPC for 2500 real-valued receptors was 22%. By clamping receptor values to binary 0/1, I obtained perfect classification.
 
@@ -129,9 +134,9 @@ Although I know that only five binary features could separate 28 classes, I don'
 
 More evidence that I can use significantly fewer than 2500 receptors: I used [Principal Component Analysis](https://en.wikipedia.org/wiki/Principal_component_analysis), which I have written about [previously](http://blog.iank.org/pca-on-x-plane-images.html), on the receptor activation data. Using PCA I can project the data along the first $k$ principal components, which is like re-shaping the data along a new set of axes which are uncorrelated.
 
-It's in part a way to get at the underlying dimensionality of the data: in my test, the 2500 by 2500 covariance matrix had 2500 principal components, but only about 10 of them were large, suggesting that a low-dimensional representation will be sufficient to represent most of the information.
+It's in part a way to get at the underlying dimensionality of the data: a $d \times d$ matrix will have $d$ principal components, but only a few may be large. In my test with 4841 receptors only about 10 principal componennts were significantly larger than zero, suggesting that a low-dimensional representation will be sufficient to represent most of the information.
 
-Using the first $k$ principal components[^pcacont]:
+I used [rocr_pca.m](https://github.com/iank/receptor-ocr/blob/master/writeup/rocr_pca.m) to do PCA on the receptor activation data. Using the first $k$ principal components[^pcacont]:
 
 <table>
 <tr><th>k</th><th>LSPC test error</th></tr>
@@ -144,9 +149,9 @@ Using the first $k$ principal components[^pcacont]:
 
 (Note that fewer than five principal components were needed. This is because the projection along these components is real-valued, not binary).
 
-With, for example, 5 principal components, I still need to compute the activation for all 2,500 receptors before projecting in order to classify an image[^pca]. But this experiment shows that the underlying information is not nearly 2,500-dimensional and far fewer receptors should be needed. Selecting useful receptors is explored in the following section.
+With, for example, 5 principal components, I still need to compute the activation for all 4841 receptors before projecting in order to classify an image[^pca]. But this experiment shows that the underlying information is not nearly 4841-dimensional and far fewer receptors should be needed. Selecting useful receptors is explored in the following section.
 
-__Test error for 4 principal components (from 2500 binary receptors): 0.00%__
+__Test error for 4 principal components (from 4841 binary receptors): 0.00%__
 
 <a name="entropy"></a>
 #### Entropy
@@ -203,6 +208,8 @@ I also tried selecting for receptor specificity, i.e. recomputing usefulness as:
 
 Note the larger horizontal axis here. With this method, the first few receptors were more immediately useful, but it took longer to converge. Also, this is from an initial set of 5000. This is evidence that there is a balance between initial set size (larger = more likely to generate useful receptors) and redundancy.
 
+<!-- This method used revisions 2fb264a9a0e759eaa06e0c0a9cc263c655f78f17 and 3706c08a1d067cf13a3d2efd3c4317fc76071e44 of gen_receptors.py TODO -->
+
 Both methods are a clear improvement over 2,500 or 5,000, but it seems too many. This is addressed in the next section.
 
 __Test error for first 600 features selected using entropy: 0.00%__
@@ -222,6 +229,8 @@ I attempted to address this by augmenting the usefulness score with a measure of
     - Recompute usefulness for all receptors, multiplying by the average symmetric K-L divergence from receptors in $S$
 - Take the first $N$ receptors from $S$, these are the $N$ most 'useful' receptors
 
+<!-- TODO revision e5be113fbe1dccdad865c78ccdf5cfef10eae127 of gen_receptors.py -->
+
 The result of this approach, from an initial set of 5000, is shown below (here I am minimizing $H(X|Y)$, as in the previous plot).
 
 ![err_vs_n_3.png](/images/receptors/err_vs_n_3.png)
@@ -230,6 +239,8 @@ Initially, this is a clear improvement over the last, but it has not succeeded i
 
 <a name="hill"></a>
 #### Greedy hill-climbing & pruning
+
+<!-- TODO: rocr_hill.m -->
 
 A simple feature selection strategy is greedy hill-climbing. Start with an empty set of features, $S$, and a set of remaining features, $R$.
 
@@ -256,6 +267,14 @@ In a test with 5000 initial receptors, 45 were added and then pruned to 20 while
 The features are shown below, along with their entropies and probabilities of activation $p(Y_k=1|X=x)$. This helps illustrate how each feature breaks up the space:
 
 <table style="border-collapse: collapse;">
+<tr><td style="padding: 0; margin: 0; background-color:#00FF00">On (&gt; 90%)</td>
+    <td style="padding: 0; margin: 0; background-color:#ADD8E6">Mid (15% - 90%)</td>
+    <td style="padding: 0; margin: 0; background-color:#FFE3EB">Low (1% - 15%)</td>
+    <td style="padding: 0; margin: 0; background-color:#FFFFFF">Off (&lt; 1%)</td>
+</tr>
+</table>
+
+<table style="border-collapse: collapse;">
 <tr><th>#</th><th>Hyx</th><th>Hxy</th><th>_</th><th>1</th><th>A</th><th>B</th><th>C</th><th>D</th><th>E</th><th>F</th><th>G</th><th>H</th><th>I</th><th>J</th><th>K</th><th>L</th><th>M</th><th>N</th><th>O</th><th>P</th><th>Q</th><th>R</th><th>S</th><th>T</th><th>U</th><th>V</th><th>W</th><th>X</th><th>Y</th><th>Z</th></tr>
 <tr><td>4621</td><td>0.06</td><td style="border-right: 1px solid">4.50</td><td style="padding: 0; margin: 0; background-color:#FFFFFF">&nbsp;</td> <td style="padding: 0; margin: 0; background-color:#ADD8E6">&nbsp;</td> <td style="padding: 0; margin: 0; background-color:#00FF00">&nbsp;</td> <td style="padding: 0; margin: 0; background-color:#00FF00">&nbsp;</td> <td style="padding: 0; margin: 0; background-color:#00FF00">&nbsp;</td> <td style="padding: 0; margin: 0; background-color:#00FF00">&nbsp;</td> <td style="padding: 0; margin: 0; background-color:#00FF00">&nbsp;</td> <td style="padding: 0; margin: 0; background-color:#00FF00">&nbsp;</td> <td style="padding: 0; margin: 0; background-color:#00FF00">&nbsp;</td> <td style="padding: 0; margin: 0; background-color:#00FF00">&nbsp;</td> <td style="padding: 0; margin: 0; background-color:#00FF00">&nbsp;</td> <td style="padding: 0; margin: 0; background-color:#00FF00">&nbsp;</td> <td style="padding: 0; margin: 0; background-color:#00FF00">&nbsp;</td> <td style="padding: 0; margin: 0; background-color:#00FF00">&nbsp;</td> <td style="padding: 0; margin: 0; background-color:#00FF00">&nbsp;</td> <td style="padding: 0; margin: 0; background-color:#00FF00">&nbsp;</td> <td style="padding: 0; margin: 0; background-color:#00FF00">&nbsp;</td> <td style="padding: 0; margin: 0; background-color:#00FF00">&nbsp;</td> <td style="padding: 0; margin: 0; background-color:#00FF00">&nbsp;</td> <td style="padding: 0; margin: 0; background-color:#00FF00">&nbsp;</td> <td style="padding: 0; margin: 0; background-color:#00FF00">&nbsp;</td> <td style="padding: 0; margin: 0; background-color:#00FF00">&nbsp;</td> <td style="padding: 0; margin: 0; background-color:#00FF00">&nbsp;</td> <td style="padding: 0; margin: 0; background-color:#00FF00">&nbsp;</td> <td style="padding: 0; margin: 0; background-color:#00FF00">&nbsp;</td> <td style="padding: 0; margin: 0; background-color:#00FF00">&nbsp;</td> <td style="padding: 0; margin: 0; background-color:#00FF00">&nbsp;</td> <td style="padding: 0; margin: 0; background-color:#00FF00">&nbsp;</td></tr>
 <tr><td>2133</td><td>0.08</td><td style="border-right: 1px solid">3.92</td><td style="padding: 0; margin: 0; background-color:#FFFFFF">&nbsp;</td> <td style="padding: 0; margin: 0; background-color:#FFFFFF">&nbsp;</td> <td style="padding: 0; margin: 0; background-color:#00FF00">&nbsp;</td> <td style="padding: 0; margin: 0; background-color:#00FF00">&nbsp;</td> <td style="padding: 0; margin: 0; background-color:#FFFFFF">&nbsp;</td> <td style="padding: 0; margin: 0; background-color:#FFFFFF">&nbsp;</td> <td style="padding: 0; margin: 0; background-color:#00FF00">&nbsp;</td> <td style="padding: 0; margin: 0; background-color:#00FF00">&nbsp;</td> <td style="padding: 0; margin: 0; background-color:#FFFFFF">&nbsp;</td> <td style="padding: 0; margin: 0; background-color:#00FF00">&nbsp;</td> <td style="padding: 0; margin: 0; background-color:#00FF00">&nbsp;</td> <td style="padding: 0; margin: 0; background-color:#00FF00">&nbsp;</td> <td style="padding: 0; margin: 0; background-color:#00FF00">&nbsp;</td> <td style="padding: 0; margin: 0; background-color:#00FF00">&nbsp;</td> <td style="padding: 0; margin: 0; background-color:#00FF00">&nbsp;</td> <td style="padding: 0; margin: 0; background-color:#00FF00">&nbsp;</td> <td style="padding: 0; margin: 0; background-color:#FFFFFF">&nbsp;</td> <td style="padding: 0; margin: 0; background-color:#00FF00">&nbsp;</td> <td style="padding: 0; margin: 0; background-color:#FFFFFF">&nbsp;</td> <td style="padding: 0; margin: 0; background-color:#00FF00">&nbsp;</td> <td style="padding: 0; margin: 0; background-color:#00FF00">&nbsp;</td> <td style="padding: 0; margin: 0; background-color:#00FF00">&nbsp;</td> <td style="padding: 0; margin: 0; background-color:#FFFFFF">&nbsp;</td> <td style="padding: 0; margin: 0; background-color:#00FF00">&nbsp;</td> <td style="padding: 0; margin: 0; background-color:#ADD8E6">&nbsp;</td> <td style="padding: 0; margin: 0; background-color:#FFFFFF">&nbsp;</td> <td style="padding: 0; margin: 0; background-color:#00FF00">&nbsp;</td> <td style="padding: 0; margin: 0; background-color:#ADD8E6">&nbsp;</td></tr>
@@ -279,21 +298,25 @@ The features are shown below, along with their entropies and probabilities of ac
 <tr><td>315</td><td>0.01</td><td style="border-right: 1px solid">-0.00</td><td style="padding: 0; margin: 0; background-color:#FFFFFF">&nbsp;</td> <td style="padding: 0; margin: 0; background-color:#00FF00">&nbsp;</td> <td style="padding: 0; margin: 0; background-color:#FFFFFF">&nbsp;</td> <td style="padding: 0; margin: 0; background-color:#FFFFFF">&nbsp;</td> <td style="padding: 0; margin: 0; background-color:#FFFFFF">&nbsp;</td> <td style="padding: 0; margin: 0; background-color:#FFFFFF">&nbsp;</td> <td style="padding: 0; margin: 0; background-color:#FFFFFF">&nbsp;</td> <td style="padding: 0; margin: 0; background-color:#FFFFFF">&nbsp;</td> <td style="padding: 0; margin: 0; background-color:#FFFFFF">&nbsp;</td> <td style="padding: 0; margin: 0; background-color:#FFFFFF">&nbsp;</td> <td style="padding: 0; margin: 0; background-color:#FFFFFF">&nbsp;</td> <td style="padding: 0; margin: 0; background-color:#FFFFFF">&nbsp;</td> <td style="padding: 0; margin: 0; background-color:#FFFFFF">&nbsp;</td> <td style="padding: 0; margin: 0; background-color:#FFFFFF">&nbsp;</td> <td style="padding: 0; margin: 0; background-color:#FFFFFF">&nbsp;</td> <td style="padding: 0; margin: 0; background-color:#FFFFFF">&nbsp;</td> <td style="padding: 0; margin: 0; background-color:#FFFFFF">&nbsp;</td> <td style="padding: 0; margin: 0; background-color:#FFFFFF">&nbsp;</td> <td style="padding: 0; margin: 0; background-color:#FFFFFF">&nbsp;</td> <td style="padding: 0; margin: 0; background-color:#FFFFFF">&nbsp;</td> <td style="padding: 0; margin: 0; background-color:#FFFFFF">&nbsp;</td> <td style="padding: 0; margin: 0; background-color:#FFFFFF">&nbsp;</td> <td style="padding: 0; margin: 0; background-color:#FFFFFF">&nbsp;</td> <td style="padding: 0; margin: 0; background-color:#FFFFFF">&nbsp;</td> <td style="padding: 0; margin: 0; background-color:#FFFFFF">&nbsp;</td> <td style="padding: 0; margin: 0; background-color:#FFFFFF">&nbsp;</td> <td style="padding: 0; margin: 0; background-color:#FFFFFF">&nbsp;</td> <td style="padding: 0; margin: 0; background-color:#FFFFFF">&nbsp;</td></tr>
 </table>
 
-## Delete me/TO DO:
+<a name="summary"></a>
+### Summary
 
-- TODO: factual:
-    - mention naiive bayes after table- there is still some nonlinear magic here
-    - discuss difference/similarity between receptors and template matching
-    - summary and table of results for each method
-- TODO: consistent bookending of sections
-- TODO: cosmetic
-    - axis labels for err_vs_n plots (paste them on there)
-    - table color legend
-- TODO: code
-    - links to code/revision in each section
-    - readme for github repo, push
-    - github link at the top
-- TODO: proofread
+Here is a summary of the techniques discussed in this article. In all cases (except chance), LSPC is used to classify the generated/selected features.
+
+<table>
+<tr><th>Method</th><th>Features</th><th>Error</th></tr>
+<tr><td>Chance</td><td>0</td><td>~90%</td></tr>
+<tr><td>Template matching</td><td>250000</td><td>31.03%</td></tr>
+<tr><td>Hu moments</td><td>7</td><td>10.34%</td></tr>
+<tr><td>PCA (continuous activation)</td><td>8 principal components (4841 underlying receptors)</td><td>0%</td></tr>
+<tr><td>PCA (binary activation)</td><td>4 principal (4841 underlying receptors)</td><td>0%</td></tr>
+<tr><td>Receptors (continuous activation)</td><td>2500</td><td>22%</td></tr>
+<tr><td>Receptors (binary activation)</td><td>2500</td><td>0%</td></tr>
+<tr><td>Entropy selection (max HXY)</td><td>~600 (initially 2500)</td><td>0%</td></tr>
+<tr><td>Entropy selection (min HXY)</td><td>~1700 (initially 5000)</td><td>0%</td></tr>
+<tr><td>Entropy (min HXY) + K-L divergence</td><td>~1500 (initially 5000)</td><td>0%</td></tr>
+<tr><td>Greedy hill-climbing &amp; pruning</td><td>20 (initially 5000)</td><td>0%</td></tr>
+</table>
 
 <a name="refs"></a>
 ### References/Notes
@@ -306,7 +329,7 @@ The features are shown below, along with their entropies and probabilities of ac
 
 [^log2]: One feature can split 28 classes into two groups of 14. Further independent features could split those into four groups of 7, then four groups of 3 and four groups of 4, and so on. [28] -> [14 14] -> [7 7 7 7] -> [3 3 3 3 4 4 4 4] -> [2 2 2 2 2 2 2 2 2 2 2 2 1 1 1] -> [1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1]. So 5 features are needed.
 
-[^gender]: The game came out in 1979.
+[^gender]: The game came out in 1979, so this is binary.
 
 [^pcacont]: With continuous rather than binary receptor activations, PCA+LSPC required 8 principal components.
 
@@ -318,4 +341,4 @@ The features are shown below, along with their entropies and probabilities of ac
 
 [^hillclimb]: I guess nobody calls it "valley-descending"
 
-
+[^receptors]: It's worth noting the similarities to template matching here. These features are not invariant to rotation or skew, but are somewhat more flexible than templates because activation may take place anywhere on an arbitrary line segment.
