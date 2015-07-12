@@ -1,8 +1,7 @@
 Title: Feature Generation and Selection for Single Character Recognition
-Date: 2015-06-29 16:17
+Date: 2015-07-11 21:58
 Tags: python, MATLAB, computer math, OCR, feature selection
-Status: Draft
-Summary: TODO
+Summary: I design features for single-character image recognition and implement a variety of feature selection techniques in order to generate a parsimonious model.
 
 - [Background: Single-character recognition](#background)
 - [Dataset](#data)
@@ -28,20 +27,16 @@ Although my segmentation is consistent, presenting Tesseract with a single chara
 
 Also, Tesseract is a powerful OCR engine, but I only need single-character recognition. Invoking Tesseract for each tile in a screenshot takes a significant portion of the total runtime of [capitals-solver](https://github.com/iank/capitals-solver).
 
-I decided to write my own classifier for the relatively trivial problem of classifying consistently-rendered single character tiles. This quickly became an exploration of [feature selection](https://en.wikipedia.org/wiki/Feature_selection) techniques. Later, I will explore the application of my model to more difficult problems, such as recognition of multiple fonts or handwritten letters.
-
-All of the code used is available on [github/receptor-ocr](https://github.com/iank/receptor-ocr). I have tried to make note of when I used different revisions of the same code in this article.
-
-I demonstrate a complete walkthrough of the most effictive method in the [README](http://TODO) and in [a subsequent post on the MNIST handwritten digit dataset](http://TODO).
+I decided to write my own classifier for the relatively trivial problem of classifying consistently-rendered single character tiles. All of the code used is available on [github/receptor-ocr](https://github.com/iank/receptor-ocr). I have tried to note when I used different revisions of the same code in this article.
 
 <a name="data"></a>
 ### Dataset
 
-I generated training/test data by segmenting [several screenshots](https://github.com/iank/receptor-ocr/tree/master/training_data) from [Capitals](https://itunes.apple.com/us/app/capitals-free-word-battle/id968456900?mt=8) using [gen_training_data.py](https://github.com/iank/receptor-ocr/blob/master/gen_training_data.py) and labeled them manually using [label_seg.py](https://github.com/iank/receptor-ocr/blob/master/label_seg.py). This [training data is available here](https://github.com/iank/receptor-ocr/tree/master/training_data), and is the same dataset I use throughout this article. A scaled example image is below.
+I generated training/test data by segmenting [several screenshots](https://github.com/iank/receptor-ocr/tree/master/training_data) from [Capitals](https://itunes.apple.com/us/app/capitals-free-word-battle/id968456900?mt=8) using [gen_training_data.py](https://github.com/iank/receptor-ocr/blob/fe602f7fdac611c31f08d357131cf7d6ca0f7a17/gen_training_data.py) and labeled them manually using [label_seg.py](https://github.com/iank/receptor-ocr/blob/9c94bc1f0f3644a97a17bc1871908b196e206c60/label_seg.py). This [training data is available here](https://github.com/iank/receptor-ocr/tree/9c94bc1f0f3644a97a17bc1871908b196e206c60/training_data), and is the same dataset I use throughout this article. A scaled example image is below.
 
 ![Example Q image](/images/receptors/E.png.cx_contour_12.png)
 
-This is a $c=28$ class problem: A-Z, blank, and "capital" (an arbitrary icon specific to the game *Capitals*). I have a relatively small dataset, with $n=346$ examples. I have at least 4 examples of each class, except for 'J', of which there are only 3. The images are 500px by 500px binary images, or nominally $d=250,000$ dimensions. Throughout the article I use 75% of the data (259 instances) for training, and the remaining 25% (87 instances) for testing.
+This is a $c=28$ class problem: A-Z, blank, and "capital" (an arbitrary icon specific to the game *Capitals*). I have a small dataset with $n=346$ examples. I have at least 4 examples of each class, except for 'J', of which there are only 3. The images are 500px by 500px binary images, or nominally $d=250,000$ dimensions. Throughout the article I use 75% of the data (259 instances) for training, and the remaining 25% (87 instances) for testing.
 
 Note the small $n$ means that there is significant variability in performance, depending on how the training/test sets are (randomly) split. It's not improbable that there could be no 'J's present in the training set in one run, for example. Where error has varied significantly I have done several runs and presented a typical value.
 
@@ -55,7 +50,7 @@ Also note that since this is a multinomial problem, the 'chance' error rate is n
 
 *Note: Throughout this article I use LSPC[[^lspc]]. It is a kernel-based nonlinear classifier, approximately as accurate as SVM or KLR, but blindingly fast (it has a closed form solution), allowing me to evaluate hundreds of models in the time it would take to train a single KLR. It is also natively multi-class and produces probabilistic outputs.*
 
-A naïve approach is to encode each image as a vector of pixel values and use these as inputs to a nonlinear classifier, such as a neural network, support vector machine, or [KLR](http://web.stanford.edu/~hastie/Papers/svmtalk.pdf). This is essentially template matching, and I'll refer to it as such here.
+A naïve approach is to encode each image as a vector of pixel values and use these as inputs to a nonlinear classifier, such as a neural network, support vector machine, or [KLR](http://web.stanford.edu/~hastie/Papers/svmtalk.pdf). This is essentially template matching.
 
 Template matching can be effective when images are consistent within classes (i.e. all "f"s look the same). On more difficult problems, template matching can be effective with some application-specific preprocessing, such as deskewing[[^deskewing]], and other normalization.
 
@@ -63,7 +58,7 @@ Encoding entire images as vectors can lead to dimensionality problems, even afte
 
 Since all character examples in my application come from a single font and are consistently oriented, template matching is a good benchmark.
 
-Using [template_match.py](https://github.com/iank/receptor-ocr/blob/master/template_match.py) I generated the $n=346$, $d=250,000$ vectors and classified using LSPC by passing the resulting 165 megabyte CSV to [template.m](https://github.com/iank/receptor-ocr/blob/master/writeup/template.m).
+Using [template_match.py](https://github.com/iank/receptor-ocr/blob/master/template_match.py) I generated the $n=346$, $d=250,000$ vectors and classified using LSPC by passing the resulting 165 megabyte CSV to [template.m](https://github.com/iank/receptor-ocr/blob/master/matlab/template.m).
 
 The resulting data is unwieldy, and clearly redundant (as a back-of-the-envelope measure of information content, note that it gzips to 1.2M)
 
@@ -93,28 +88,25 @@ With better feature design, we can generate smaller models, achieve better class
 
 Example features for character recognition could be:
 
-- counting of connected components
+- counting connected components
 - drawing regularly-spaced horizontal and vertical lines over the image and counting intersections for each
 - statistics gleaned from approximating edges as lower-degree polygons
-- etc
 
 As an interesting compromise between manual feature design and automatic feature extraction, I found this [codeproject post by Andrew Kirillov](http://www.codeproject.com/Articles/11285/Neural-Network-OCR), who uses "receptors" (scroll to "Another Approach")[^receptors].
 
 The idea is to project the same set of small line segments on each image, and generate a vector of receptor activation (crossing the letter / not crossing the letter) for each image.
 
-In the codeproject post, the author is using a neural network, and training time can be greatly improved by reducing the number of features. He uses empirical estimates of entropy to attempt to select the most useful features.
-
-I construct receptors by generating a set of midpoints, lengths, and angles. The midpoint positions are normalized so the image centroid is $(0.5,0.5)$, and distances (length, offset from centroid) are normalized by the image diagonal. So these features should not depend on scale or translation (although significant variation in whitespace padding could break things).
+I construct receptors by generating a set of midpoints, lengths, and angles. The midpoint positions are normalized so the image centroid is $(0.5,0.5)$, and distances (length, offset from centroid) are normalized by the image diagonal. So these features should not depend on scale or translation (although significant variation in whitespace padding could break my implementation).
 
 Midpoints have a Gaussian distribution $N(\mu = [0.5, 0.5], \sigma^2 = 0.2)$, and lengths are Rayleigh distributed ($\sigma = 0.08$). Angles are uniform between $0$ and $2\pi$.
 
-At first, I tried to improve upon the receptor model by making receptor activation a real number (the average pixel intensity across the receptor) rather than a binary activation.
-
 With [gen_receptors.py](https://github.com/iank/receptor-ocr/blob/master/gen_receptors.py) I generated 2500 receptors, and produced a CSV using [gen_training_csv.py](https://github.com/iank/receptor-ocr/blob/master/gen_training_csv.py).
 
-Test error obtained with LSPC for 2500 real-valued receptors was 22%. By clamping receptor values to binary 0/1, I obtained perfect classification.
+At first, I tried to improve upon the receptor model by making receptor activation a real number (the average pixel intensity across the receptor) rather than a binary activation. Test error obtained with LSPC for 2500 real-valued receptors was 22%. By clamping receptor values to binary 0/1, I obtained perfect classification.
 
-Here, $n=2500$ receptors is more than enough to perfectly classify my dataset, and training time with LSPC is a fraction of a second, making feature selection unnecessary. However, requiring so many receptors for such an easy classification task seems inelegant, so I discuss feature selection below.
+In the codeproject post, the author is using a neural network, and training time can be greatly improved by reducing the number of features. He uses empirical estimates of entropy to attempt to select the most useful features.
+
+Here, $n=2500$ receptors are more than enough to perfectly classify my dataset, and training time with LSPC is a fraction of a second, making feature selection unnecessary. However requiring so many receptors for such an easy classification task seems wasteful, so I discuss feature selection below.
 
 __Test error for 2500 binary receptors: 0.00%__
 
@@ -126,9 +118,9 @@ __Test error for 2500 binary receptors: 0.00%__
 While 2500 binary features perfectly separates the data, $c=28$ classes should be separable with $\lceil log_2(28) \rceil = 5$ binary features[^log2], if five features can be found which:
 
 - are consistent within-class (i.e. feature is *always* or *never* on whenever it is shown an example of an 'S')
-- usefully separate the space (i.e. a feature that is always on for A-M and always off for N-Z. a second feature is on for A, C, E, ... and off for B, D, F, ...)
+- usefully separate the space (e.g. a feature that is always on for A-M and always off for N-Z. a second feature is on for A, C, E, ... and off for B, D, F, ...)
 
-These qualities can be measured statistically with [entropy](https://en.wikipedia.org/wiki/Entropy_(information_theory)), but I first encountered this as a child playing [Guess Who?](https://boardgamegeek.com/boardgame/4143/guess-who): You attempt to select an individual from an array of faces by asking your opponent yes/no questions. "Is the person I am looking for female?" is a good first question to ask, because it splits the space evenly by eliminating a gender[^gender]. "Does the person have green eyeglasses" is highly-specific and could pay off, but it's more likely to eliminate only one or two faces, so it is not a great first question. I'll discuss this more in the next section.
+These qualities can be measured statistically with [entropy](https://en.wikipedia.org/wiki/Entropy_(information_theory)), but I the idea is fixed in my intuition from playing [Guess Who?](https://boardgamegeek.com/boardgame/4143/guess-who) as a kid. In the game, players attempt to select an individual from an array of faces by asking their opponent yes/no questions. "Is the person I am looking for female?" is a good first question to ask, because it splits the game space about evenly. "Does the person have green eyeglasses" is highly-specific and could pay off, but it's more likely to eliminate only one or two faces, so it is not a great first question. I'll discuss this more in the next section.
 
 Although I know that only five binary features could separate 28 classes, I don't yet know that these features can be modeled with receptors (I have strong evidence that such features *exist*, however, since I have separated the space using 2500 receptors).
 
@@ -136,7 +128,7 @@ More evidence that I can use significantly fewer than 2500 receptors: I used [Pr
 
 It's in part a way to get at the underlying dimensionality of the data: a $d \times d$ matrix will have $d$ principal components, but only a few may be large. In my test with 4841 receptors only about 10 principal componennts were significantly larger than zero, suggesting that a low-dimensional representation will be sufficient to represent most of the information.
 
-I used [rocr_pca.m](https://github.com/iank/receptor-ocr/blob/master/writeup/rocr_pca.m) to do PCA on the receptor activation data. Using the first $k$ principal components[^pcacont]:
+I used [rocr_pca.m](https://github.com/iank/receptor-ocr/blob/master/matlab/rocr_pca.m) to do PCA on the receptor activation data. Using the first $k$ principal components[^pcacont]:
 
 <table>
 <tr><th>k</th><th>LSPC test error</th></tr>
@@ -208,7 +200,7 @@ I also tried selecting for receptor specificity, i.e. recomputing usefulness as:
 
 Note the larger horizontal axis here. With this method, the first few receptors were more immediately useful, but it took longer to converge. Also, this is from an initial set of 5000. This is evidence that there is a balance between initial set size (larger = more likely to generate useful receptors) and redundancy.
 
-<!-- This method used revisions 2fb264a9a0e759eaa06e0c0a9cc263c655f78f17 and 3706c08a1d067cf13a3d2efd3c4317fc76071e44 of gen_receptors.py TODO -->
+(This method used revisions 2fb264a9a0e759eaa06e0c0a9cc263c655f78f17 and 3706c08a1d067cf13a3d2efd3c4317fc76071e44 of gen_receptors.py).
 
 Both methods are a clear improvement over 2,500 or 5,000, but it seems too many. This is addressed in the next section.
 
@@ -217,7 +209,7 @@ __Test error for first 600 features selected using entropy: 0.00%__
 <a name="redundancy"></a>
 #### Redundancy (K-L divergence)
 
-The entropy-based selection described above has a certain information-theoretic appeal, but it does not look for receptors which split the class space *differently*. A receptor which separates A-N from M-Z has high 'usefulness' as calculated above, but so do 200 receptors which separate A-N from M-Z, and these do not add information beyond the first. In the image below, the first 1,000 or so receptors (shown in green) very specifically identify a capital. Only after 1,000 do we get receptors which activate for other letters, such as 'A' (red).
+The entropy-based selection described above has a certain information-theoretic appeal, but it does not look for receptors which split the class space *differently*. A receptor which separates A-N from M-Z has high 'usefulness' as calculated above, but so do 200 receptors which separate A-N from M-Z, and these do not add information beyond the first. In the image below, the first 1,000 or so receptors (shown in green) very specifically identify a capital. Only after 1,000 do we get receptors which activate for other letters (red).
 
 ![c1000.png](/images/receptors/c1000.png)
 
@@ -229,7 +221,7 @@ I attempted to address this by augmenting the usefulness score with a measure of
     - Recompute usefulness for all receptors, multiplying by the average symmetric K-L divergence from receptors in $S$
 - Take the first $N$ receptors from $S$, these are the $N$ most 'useful' receptors
 
-<!-- TODO revision e5be113fbe1dccdad865c78ccdf5cfef10eae127 of gen_receptors.py -->
+(This method used revision e5be113fbe1dccdad865c78ccdf5cfef10eae127 of gen_receptors.py).
 
 The result of this approach, from an initial set of 5000, is shown below (here I am minimizing $H(X|Y)$, as in the previous plot).
 
@@ -239,8 +231,6 @@ Initially, this is a clear improvement over the last, but it has not succeeded i
 
 <a name="hill"></a>
 #### Greedy hill-climbing & pruning
-
-<!-- TODO: rocr_hill.m -->
 
 A simple feature selection strategy is greedy hill-climbing. Start with an empty set of features, $S$, and a set of remaining features, $R$.
 
@@ -253,7 +243,7 @@ This involves training an astonishing number of classifiers, like a [triangular 
 
 The "greedy" aspect of this algorithm is that it never un-selects a feature. It is descending[^hillclimb] an objective function (test error) by taking the steepest immediate step at every iteration. A complete search would be the power set of features, $2^{5000}$ of them, but that is too many and the greedy hill climb works well enough.
 
-Since I added five features at a time, hill climbing is followed by a pruning step, which is much the same but in reverse. One feature is removed at a time.
+Since I added five features at a time, hill climbing is followed by a pruning step, which is much the same but in reverse. One feature is removed at a time. Code is [rocr_hill.m](https://github.com/iank/receptor-ocr/blob/master/matlab/rocr_hill.m).
 
 <a name="results"></a>
 ### Results
@@ -327,18 +317,15 @@ Here is a summary of the techniques discussed in this article. In all cases (exc
 
 [^smalldata]: This illustrates an inefficiency in the model: the template matching dataset contained more information, extracting the Hu features did not add any information. By rearranging information and throwing away redundant data, I was able to improve performance here. It is theoretically possible that a sufficiently complex neural network could perform optimally (here, perfect classification is possible) on the raw data. In some cases, this is impractical and some preprocessing can go a long way. On the other hand, especially in image recognition tasks, [DBNs](https://en.wikipedia.org/wiki/Deep_belief_network) and other deep neural models have shown remarkable results and can be used to generate high-level features automatically. It's possible that this kind of model can make manual feature design unnecessary, and enable feature design in spaces we do not understand.
 
+[^receptors]: It's worth noting the similarities to template matching here. These features are not invariant to rotation or skew, but are somewhat more flexible than templates because activation may take place anywhere on an arbitrary line segment.
 [^log2]: One feature can split 28 classes into two groups of 14. Further independent features could split those into four groups of 7, then four groups of 3 and four groups of 4, and so on. [28] -> [14 14] -> [7 7 7 7] -> [3 3 3 3 4 4 4 4] -> [2 2 2 2 2 2 2 2 2 2 2 2 1 1 1] -> [1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1]. So 5 features are needed.
-
-[^gender]: The game came out in 1979, so this is binary.
 
 [^pcacont]: With continuous rather than binary receptor activations, PCA+LSPC required 8 principal components.
 
-[^pca]: For LSPC, this means PCA is no real advantage. It is cheap enough to classify $d=2500$ vectors. For models which depend heavily on dimension, like multi-layer perceptrons, PCA will be a big speedup.
+[^pca]: For LSPC, this means PCA is no real advantage. It is cheap enough to classify $d=2500$ vectors. Peprocessing with PCA will be a big speedup for models which depend more heavily on dimension.
 
 [^goodquestion]: Maximizing this value, then, would seem counterintuitive. However, receptors which evenly split the class space also have high entropy. I also tried minimizing H(X|Y), which is more akin to asking "does the subject wear green eyeglasses?" than "does the subject have facial hair?", but small values here at least ensure there is some certainty. Both approach suffer from the redundancy issue I discuss in the next section.
 
 [^mrmr]: This combined entropy/redundancy approach is vaguely reminiscent of more mature techniques like [mRMR](https://en.wikipedia.org/wiki/Feature_selection#Minimum-redundancy-maximum-relevance_.28mRMR.29_feature_selection).
 
 [^hillclimb]: I guess nobody calls it "valley-descending"
-
-[^receptors]: It's worth noting the similarities to template matching here. These features are not invariant to rotation or skew, but are somewhat more flexible than templates because activation may take place anywhere on an arbitrary line segment.
