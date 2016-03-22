@@ -36,7 +36,7 @@ DEFAULT_PAGINATION = 10
 # Uncomment following line if you want document-relative URLs when developing
 #RELATIVE_URLS = True
 
-THEME = "/home/ian/blog/theme/"
+THEME = "/home/ian/sites/blog.iank.org/theme/"
 MD_EXTENSIONS = ['codehilite', 'extra', 'footnotes']
 STATIC_PATHS = ['images', 'pdf', 'extra']
 EXTRA_PATH_METADATA = {
