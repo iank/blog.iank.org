@@ -1,0 +1,222 @@
+<!doctype html>
+<html class="no-js" lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+		<title>Playing Capitals with OpenCV and Python - Ian Kilgore's blog
+</title>
+		<meta name="description" content="">
+		<meta name="author" content="Ian Kilgore">
+
+		<link rel="stylesheet" href="http://blog.iank.org/theme/css/foundation.css" />
+                <link rel="alternate" href="http://blog.iank.org/feeds/all.rss.xml" type="application/rss+xml" title="blog.iank.org RSS feed" />
+
+		<link rel="stylesheet" href="http://blog.iank.org/theme/css/pygment/monokai.css" />
+		<link rel="stylesheet" href="http://blog.iank.org/theme/css/custom.css" />
+
+
+		<script src="http://blog.iank.org/theme/js/modernizr.js"></script>
+
+		<!-- Feeds -->
+		<link href="http://blog.iank.org/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Ian Kilgore's blog Atom Feed" />
+
+
+		<!-- mathjax config similar to math.stackexchange -->
+		<script type="text/x-mathjax-config">
+		MathJax.Hub.Config({
+			jax: ["input/TeX", "output/HTML-CSS"],
+			tex2jax: {
+				inlineMath: [ ['$', '$'] ],
+				displayMath: [ ['$$', '$$']],
+				processEscapes: true,
+				skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+			},
+			messageStyle: "none",
+			"HTML-CSS": { preferredFont: "TeX", availableFonts: ["STIX","TeX"] }
+		});
+		</script>
+		<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+	</head>
+	<body>
+		<div class="off-canvas-wrap">
+			<div class="inner-wrap">
+				<!-- mobile top bar to activate nav -->
+				<nav class="tab-bar show-for-small">
+					<section class="left-small">
+						<a class="left-off-canvas-toggle menu-icon" ><span></span></a>
+					</section>
+
+					<section class="middle tab-bar-section">
+						<h1 class="title">Ian&nbsp;Kilgore's&nbsp;blog</h1>
+					</section>
+				</nav>
+
+				<!-- mobile side bar nav -->
+				<aside class="left-off-canvas-menu">
+					<ul class="off-canvas-list">
+						<li><a href="http://blog.iank.org">Home</a></li>
+						<li><label>Categories</label></li>
+							<li class="active"><a href="http://blog.iank.org/category/computer-vision.html">computer vision</a></li>
+							<li ><a href="http://blog.iank.org/category/machine-learning.html">machine learning</a></li>
+							<li ><a href="http://blog.iank.org/category/math.html">math</a></li>
+							<li ><a href="http://blog.iank.org/category/misc.html">misc</a></li>
+
+						<li><label>Places</label></li>
+							<li><a href="http://blog.iank.org/">Blog</a></li>
+							<li><a href="http://blog.iank.org/pages/contact.html">Contact</a></li>
+							<li><a href="http://iank.org/">Home</a></li>
+							<li><a href="http://iank.org/projects.html">Projects</a></li>
+
+
+
+<!--						<li><label>Links</label></li>
+ -->
+					</ul>	
+				</aside>
+
+				<!-- top bar nav -->
+				<nav class="top-bar hide-for-small-only" data-topbar>
+					<ul class="title-area">
+						<li class="name">
+							<h1><a href="http://blog.iank.org/">Ian Kilgore's blog</a></h1>
+						</li>
+					</ul>
+
+					<section class="top-bar-section">
+						<ul class="left">
+								<li class="active"><a href="http://blog.iank.org/category/computer-vision.html">computer vision</a></li>
+								<li ><a href="http://blog.iank.org/category/machine-learning.html">machine learning</a></li>
+								<li ><a href="http://blog.iank.org/category/math.html">math</a></li>
+								<li ><a href="http://blog.iank.org/category/misc.html">misc</a></li>
+						</ul>
+					</section>
+				</nav>
+
+				<!-- Main Page Content and Sidebar -->
+				<section class="main-section">
+					<div class="row">
+						<!-- Main Content -->
+						<div class="medium-9 small-12 columns" role="content">
+<article>
+	<h2>Playing Capitals with OpenCV and Python</h2>
+	<p>On Monday evening I had dinner with my friend Alysia Promislow, who showed me the game <a href="https://itunes.apple.com/us/app/capitals-free-word-battle/id968456900">Capitals</a> and suggested it might be interesting to play it programmatically.</p>
+<p>I spent the last 18-20 working hours doing that. <a href="https://github.com/iank/capitals-solver">(Github link with code and example images)</a>. Hopefully it's redundant to mention that I've done this because it let me geek out on a goofy computational problem, not because I'm interested in cheating at a phone game<sup id="fnref:game"><a class="footnote-ref" href="#fn:game" rel="footnote">1</a></sup>.</p>
+<p>90% of getting anything done is knowing things exist, and the first two things I thought about after seeing the game is:</p>
+<ul>
+<li>The low-complexity shapes and clear separation make it amenable to some simple computer vision techniques <a href="http://iank.org/rmbc.html">that I have employed before</a></li>
+<li>Hexagonal coordinate systems are a thing</li>
+</ul>
+<h3>Decoding game state from a screenshot</h3>
+<p>I spent Tuesday afternoon writing a Python script to decode the game state from a screenshot, using <a href="http://opencv.org">OpenCV</a> and <a href="https://code.google.com/p/tesseract-ocr/">Tesseract</a> OCR engine.</p>
+<p>It takes an RGB image, such as:</p>
+<p><img alt="RGB screenshot" src="/images/capitals_ex.png" /></p>
+<p>Next, it greyscales and runs the <a href="http://docs.opencv.org/modules/imgproc/doc/feature_detection.html?highlight=canny#canny">Canny edge detector</a> to produce:</p>
+<p><img alt="Edge-detected" src="/images/capital_ex_canny.png" /></p>
+<p>To detect and isolate hexagons, I follow a <a href="https://github.com/Itseez/opencv/blob/master/samples/cpp/squares.cpp">similar approach</a> as the OpenCV example <a href="https://github.com/Itseez/opencv/blob/master/samples/cpp/squares.cpp">squares.cpp</a>:</p>
+<ul>
+<li><a href="http://docs.opencv.org/modules/imgproc/doc/structural_analysis_and_shape_descriptors.html#findcontours">Find contours</a> in the edge-detected image</li>
+<li>Using the <a href="http://docs.opencv.org/modules/imgproc/doc/structural_analysis_and_shape_descriptors.html#approxpolydp">Ramer-Douglas-Peucker algorithm</a>, attempt to approximate polygonal curves as lower-degree polygons</li>
+<li>Take all detected six-sided convex polygons having a certain minimum area</li>
+<li>It is also useful to check for approximately 120 degree angles, but it's not necessary for this application.</li>
+</ul>
+<p>Taking only the contours which meet the criteria, we have:</p>
+<p><img alt="Isolated contours" src="/images/capital_ex_contour_mask.png" /></p>
+<p>Iterating through these I use a series of increasingly-dubious heuristics to classify the hexagons:</p>
+<ul>
+<li>Take the average RGB value of each hexagon:<ul>
+<li>Hexagons that are much more red than blue belong to red player</li>
+<li>Hexagons that are much more blue than red belong to blue player</li>
+</ul>
+</li>
+<li>Hexagons that are mostly white belong to neither, and I determine the letter by passing the masked image to <a href="https://code.google.com/p/tesseract-ocr/">Tesseract</a></li>
+<li>Rather than searching for the icon that denotes the capital, I count white pixels in each red and blue hexagon. e.g., a hexagon that is mostly red but has a significant white space is the red capital.</li>
+</ul>
+<p>Now I can find possible words, but only some of them are useful. Also, there are typically thousands of candidates. In order to consider word connectedness, I find the centroids of each hexagon and estimate their position on a hexagonal grid. I've encountered hexagonal coordinate systems in <a href="http://en.wikipedia.org/wiki/File:CellTowersAtCorners.gif">wireless communications</a>, but I didn't know about the <a href="http://keekerdc.com/2011/03/hexagon-grids-coordinate-systems-and-distance-calculations/">Q*bert equivalence</a>. (There's also a great <a href="http://www.redblobgames.com/grids/hexagons/">animation here</a>, search for "convert to cube coordinates").</p>
+<p>Here is <a href="/images/hex_derivation.jpg">my derivation</a> for the mapping from rectangular to hexagonal coordinates, given the hexagonal side length (estimated from detected contours) and an origin (arbitrarily chosen, it only needs to be relatively consistent). Also there is a spacing between hexagons in this game, which I have denoted 'b'.</p>
+<h3>Finding useful moves from game state</h3>
+<p>On Wednesday afternoon I wrote code to score candidate words. It is trivial to find all possible words, given a list of letters and a dictionary. However as mentioned above, a word's length is not the most useful indicator of its fitness as a move in the game. For a played word, letters that are connected to the player's territory will become a part of it. Isolated letters can be used to construct a word, but will not become part of player territory. Also, if connected tiles in a word are adjacent to enemy territory, the opposing player will lose that territory. Finally, it is frequently possible to create the same word using differently-located tiles, and this has a strategic impact (so words are not unique, combinations of tiles are).</p>
+<p>I score candidate word choices by counting the length of the word, number of tiles it will add to player territory, number of tiles it will remove from enemy territory, and whether one of those tiles is the enemy capital (thus granting the player an extra turn, usually allowing a win).<sup id="fnref:vars"><a class="footnote-ref" href="#fn:vars" rel="footnote">2</a></sup></p>
+<p>I determine connectedness of a candidate word by considering the list of all currently-owned tiles. For each of these, I check each of the six adjacent tiles. If it is part of the candidate word, add to the list of owned tiles, and note that I've visited it. Iterate until I am done with the list of owned tiles. The result is a list of all connected tiles in the candidate word, which I then use to check enemy player adjacency. For each candidate word a vector of these score variables is generated, and I do some rudimentary sorting to produce a suggestion, such as this suggestion for the red player:<sup id="fnref:word"><a class="footnote-ref" href="#fn:word" rel="footnote">3</a></sup></p>
+<div class="codehilite"><pre><span></span><span class="n">word</span><span class="o">:</span>    <span class="n">retrenching</span><span class="o">,</span> <span class="n">territory</span> <span class="n">gain</span>   <span class="mi">10</span><span class="o">,</span> <span class="n">enemy</span> <span class="n">territory</span> <span class="n">loss</span>    <span class="mi">6</span>
+<span class="n">word</span><span class="o">:</span>    <span class="n">incremented</span><span class="o">,</span> <span class="n">territory</span> <span class="n">gain</span>   <span class="mi">10</span><span class="o">,</span> <span class="n">enemy</span> <span class="n">territory</span> <span class="n">loss</span>    <span class="mi">5</span>
+<span class="n">word</span><span class="o">:</span>     <span class="n">converting</span><span class="o">,</span> <span class="n">territory</span> <span class="n">gain</span>   <span class="mi">10</span><span class="o">,</span> <span class="n">enemy</span> <span class="n">territory</span> <span class="n">loss</span>    <span class="mi">5</span>
+<span class="n">word</span><span class="o">:</span>     <span class="n">converting</span><span class="o">,</span> <span class="n">territory</span> <span class="n">gain</span>   <span class="mi">10</span><span class="o">,</span> <span class="n">enemy</span> <span class="n">territory</span> <span class="n">loss</span>    <span class="mi">5</span>
+<span class="n">word</span><span class="o">:</span>     <span class="n">monteverdi</span><span class="o">,</span> <span class="n">territory</span> <span class="n">gain</span>   <span class="mi">10</span><span class="o">,</span> <span class="n">enemy</span> <span class="n">territory</span> <span class="n">loss</span>    <span class="mi">5</span>
+<span class="n">word</span><span class="o">:</span>     <span class="n">reentering</span><span class="o">,</span> <span class="n">territory</span> <span class="n">gain</span>    <span class="mi">9</span><span class="o">,</span> <span class="n">enemy</span> <span class="n">territory</span> <span class="n">loss</span>    <span class="mi">6</span>
+<span class="n">word</span><span class="o">:</span>    <span class="n">retrenching</span><span class="o">,</span> <span class="n">territory</span> <span class="n">gain</span>    <span class="mi">9</span><span class="o">,</span> <span class="n">enemy</span> <span class="n">territory</span> <span class="n">loss</span>    <span class="mi">6</span>
+<span class="n">word</span><span class="o">:</span>    <span class="n">retrenching</span><span class="o">,</span> <span class="n">territory</span> <span class="n">gain</span>    <span class="mi">9</span><span class="o">,</span> <span class="n">enemy</span> <span class="n">territory</span> <span class="n">loss</span>    <span class="mi">6</span>
+<span class="n">word</span><span class="o">:</span>      <span class="n">comintern</span><span class="o">,</span> <span class="n">territory</span> <span class="n">gain</span>    <span class="mi">9</span><span class="o">,</span> <span class="n">enemy</span> <span class="n">territory</span> <span class="n">loss</span>    <span class="mi">5</span>
+</pre></div>
+
+
+<p><img alt="Suggestion" src="/images/capitals_ex_suggestion.png" /></p>
+<div class="footnote">
+<hr />
+<ol>
+<li id="fn:game">
+<p>I'm terrible at this game, though. Scrabble too.&#160;<a class="footnote-backref" href="#fnref:game" rev="footnote" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
+<li id="fn:vars">
+<p>There are other variables to consider such as protecting one's own capital, avoiding being the player to bridge the gap, and positioning (ie gaining tiles in the center is more important than gaining isolated tiles which have no path to the enemy player). My thought is to construct a feature vector with these variables, weight them by some vector $\alpha$, and use a genetic algorithm to pit several of these automated players against each other in order to learn $\alpha$. I may never get around to it.&#160;<a class="footnote-backref" href="#fnref:vars" rev="footnote" title="Jump back to footnote 2 in the text">&#8617;</a></p>
+</li>
+<li id="fn:word">
+<p>Although here I'd rather play "incremented" in order to gain the 'm' tile, protecting the red capital.&#160;<a class="footnote-backref" href="#fnref:word" rev="footnote" title="Jump back to footnote 3 in the text">&#8617;</a></p>
+</li>
+</ol>
+</div>
+	<hr/>
+	<h6>Written by <a href="http://blog.iank.org/author/ian-kilgore.html">Ian Kilgore</a> in <a href="http://blog.iank.org/category/computer-vision.html">computer vision</a> on Thu 04 June 2015. Tags: <a href="http://blog.iank.org/tag/computer-math.html">computer math</a>, <a href="http://blog.iank.org/tag/hexagons.html">hexagons</a>, <a href="http://blog.iank.org/tag/capitals.html">capitals</a>, </h6>
+</article>
+
+<hr/>
+						</div>
+						<!-- End Main Content -->
+						<!-- Sidebar -->
+						<aside class="medium-3 hide-for-small-only columns">
+							<div class="panel">
+								<h5>Places</h5>
+								<ul class="side-nav">
+									<li><a href="http://blog.iank.org/">Blog</a></li>
+									<li><a href="http://blog.iank.org/pages/contact.html">Contact</a></li>
+									<li><a href="http://iank.org/">Home</a></li>
+									<li><a href="http://iank.org/projects.html">Projects</a></li>
+								</ul>
+							</div>
+
+							<div class="panel">
+								<h5>Tags</h5>
+								<ul class="tag-cloud">
+								</ul>
+							</div>
+
+
+<!--							<div class="panel">
+								<h5>Links</h5>
+								<ul class="side-nav">
+								</ul> 
+							</div> -->
+						</aside>
+						<!-- End Sidebar -->
+					</div>
+
+					<!-- Footer -->
+					<footer class="row">
+						<div class="medium-9 small-12">
+							<hr/>
+							<p class="text-center">Powered by <a href="http://getpelican.com">Pelican</a> and <a href="http://foundation.zurb.com/">Zurb Foundation</a>. Theme by <a href="http://hamaluik.com">Kenton Hamaluik</a>.</p>
+						</div>
+					</footer>
+					<!-- End Footer -->
+				</section>
+				<a class="exit-off-canvas"></a>
+			</div><!--off-canvas inner-->
+		</div><!--off-canvas wrap-->
+
+		<script src="http://blog.iank.org/theme/js/jquery.js"></script>
+		<script src="http://blog.iank.org/theme/js/foundation.min.js"></script>
+		<script>
+			$(document).foundation();
+		</script>
+	</body>
+</html>

@@ -1,0 +1,193 @@
+<!doctype html>
+<html class="no-js" lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+		<title>Inverse-Square Laws: A Physical Consequence of the Geometry of Space - Ian Kilgore's blog
+</title>
+		<meta name="description" content="">
+		<meta name="author" content="Ian Kilgore">
+
+		<link rel="stylesheet" href="http://blog.iank.org/theme/css/foundation.css" />
+                <link rel="alternate" href="http://blog.iank.org/feeds/all.rss.xml" type="application/rss+xml" title="blog.iank.org RSS feed" />
+
+		<link rel="stylesheet" href="http://blog.iank.org/theme/css/pygment/monokai.css" />
+		<link rel="stylesheet" href="http://blog.iank.org/theme/css/custom.css" />
+
+
+		<script src="http://blog.iank.org/theme/js/modernizr.js"></script>
+
+		<!-- Feeds -->
+		<link href="http://blog.iank.org/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Ian Kilgore's blog Atom Feed" />
+
+
+		<!-- mathjax config similar to math.stackexchange -->
+		<script type="text/x-mathjax-config">
+		MathJax.Hub.Config({
+			jax: ["input/TeX", "output/HTML-CSS"],
+			tex2jax: {
+				inlineMath: [ ['$', '$'] ],
+				displayMath: [ ['$$', '$$']],
+				processEscapes: true,
+				skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+			},
+			messageStyle: "none",
+			"HTML-CSS": { preferredFont: "TeX", availableFonts: ["STIX","TeX"] }
+		});
+		</script>
+		<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+	</head>
+	<body>
+		<div class="off-canvas-wrap">
+			<div class="inner-wrap">
+				<!-- mobile top bar to activate nav -->
+				<nav class="tab-bar show-for-small">
+					<section class="left-small">
+						<a class="left-off-canvas-toggle menu-icon" ><span></span></a>
+					</section>
+
+					<section class="middle tab-bar-section">
+						<h1 class="title">Ian&nbsp;Kilgore's&nbsp;blog</h1>
+					</section>
+				</nav>
+
+				<!-- mobile side bar nav -->
+				<aside class="left-off-canvas-menu">
+					<ul class="off-canvas-list">
+						<li><a href="http://blog.iank.org">Home</a></li>
+						<li><label>Categories</label></li>
+							<li ><a href="http://blog.iank.org/category/computer-vision.html">computer vision</a></li>
+							<li ><a href="http://blog.iank.org/category/machine-learning.html">machine learning</a></li>
+							<li class="active"><a href="http://blog.iank.org/category/math.html">math</a></li>
+							<li ><a href="http://blog.iank.org/category/misc.html">misc</a></li>
+
+						<li><label>Places</label></li>
+							<li><a href="http://blog.iank.org/">Blog</a></li>
+							<li><a href="http://blog.iank.org/pages/contact.html">Contact</a></li>
+							<li><a href="http://iank.org/">Home</a></li>
+							<li><a href="http://iank.org/projects.html">Projects</a></li>
+
+
+
+<!--						<li><label>Links</label></li>
+ -->
+					</ul>	
+				</aside>
+
+				<!-- top bar nav -->
+				<nav class="top-bar hide-for-small-only" data-topbar>
+					<ul class="title-area">
+						<li class="name">
+							<h1><a href="http://blog.iank.org/">Ian Kilgore's blog</a></h1>
+						</li>
+					</ul>
+
+					<section class="top-bar-section">
+						<ul class="left">
+								<li ><a href="http://blog.iank.org/category/computer-vision.html">computer vision</a></li>
+								<li ><a href="http://blog.iank.org/category/machine-learning.html">machine learning</a></li>
+								<li class="active"><a href="http://blog.iank.org/category/math.html">math</a></li>
+								<li ><a href="http://blog.iank.org/category/misc.html">misc</a></li>
+						</ul>
+					</section>
+				</nav>
+
+				<!-- Main Page Content and Sidebar -->
+				<section class="main-section">
+					<div class="row">
+						<!-- Main Content -->
+						<div class="medium-9 small-12 columns" role="content">
+<article>
+	<h2>Inverse-Square Laws: A Physical Consequence of the Geometry of Space</h2>
+	<p>John D. Barrow's <a href="https://www.goodreads.com/book/show/18926355-the-constants-of-nature?ac=1"><em>The Constants of Nature</em></a><sup id="fnref:barrow"><a class="footnote-ref" href="#fn:barrow" rel="footnote">1</a></sup> mentions that Kant may have been the first to notice a connection between the dimensionality of space and physical inverse-square laws, such as <a href="http://en.wikipedia.org/wiki/Newton's_law_of_universal_gravitation">Newton's law of universal gravitation</a>:</p>
+<p>\begin{equation}
+F = G\frac{m_1 m_2}{r^2}
+\end{equation}</p>
+<p>This is interesting. Inverse-square laws are <a href="http://en.wikipedia.org/wiki/Inverse-square_law#Occurrences">everywhere</a>, and 3D space really does appear to be special<sup id="fnref:ehrenfest"><a class="footnote-ref" href="#fn:ehrenfest" rel="footnote">3</a></sup>. Among other things, <a href="http://en.wikipedia.org/wiki/Bertrand's_theorem">stable orbits depend on it</a>. I first encountered, or at least noticed, the geometric reason for inverse-square laws in an electrodynamics and antenna theory lecture on <a href="http://en.wikipedia.org/wiki/Free-space_path_loss">free-space path loss (FSPL)</a>, which says that the power of a received signal in free space also has a $r^{-2}$ distance dependence.</p>
+<p>It is easy to understand this by picturing a point source radiating equally in all directions, i.e. spherically. Spherical symmetry is common in nature. At a distance $r$, the power is "spread out" over the surface of an imaginary sphere having area $4\pi r^2$. A similar argument can be made for gravity.</p>
+<p>This image (by <a href="http://en.wikipedia.org/wiki/File:Inverse_square_law.svg">Borb</a>, licensed under CC-BY-SA) helps illustrate the idea. At each distance $d$ the same total effect is distributed over an area $d^2$:</p>
+<p><img style="float: center" src="/images/500px-Inverse_square_law.svg.png" alt="Point source acting over a spherical area"></p>
+<p>This is clearly a consequence of the dimensionality of space as a sphere surface area scales with r^2 in 3-space. In general, an N-dimensional<sup id="fnref:convention"><a class="footnote-ref" href="#fn:convention" rel="footnote">4</a></sup> sphere has surface area which scales with $r^{N-1}$. So in 4D space, other things being equal<sup id="fnref:equal"><a class="footnote-ref" href="#fn:equal" rel="footnote">5</a></sup>, we would experience inverse-cube gravitation, electromagnetism, acoustics, and so on.</p>
+<p>Back to Kant. In his first published work (1747), "Thoughts on the true estimation of living forces"<sup id="fnref:kant"><a class="footnote-ref" href="#fn:kant" rel="footnote">2</a></sup>, Kant argues (Section 9) that space would not exist "if substances had no forces to act external to themselves". This leads him in Section 10 to ague that 3-dimensional space is a consequence of inverse-square gravity. Kant concludes that the inverse-square law is arbitrary and that "God could have chosen another, e.g., the inverse-cube relation" and that this would have resulted in a different sort of space. He goes on to suggest, (well before the development of anything like modern topology or differential geometry), that these spatial possibilities ought to be investigated.</p>
+<p>It would seem that Kant got it backward, but Kant was like that.</p>
+<p>Nonetheless, these insights (and others<sup id="fnref:misc"><a class="footnote-ref" href="#fn:misc" rel="footnote">6</a></sup>) show that an important feature of many natural laws depends on "pure" geometrical truth moreso than physical reality; the inverse-square dependence is not due to an arbitrary constant exponent but the (admittedly, possibly arbitrary) dimensionality of space.</p>
+<p>The Greeks would be proud.</p>
+<div class="footnote">
+<hr />
+<ol>
+<li id="fn:barrow">
+<p>Barrow, John D, "New Dimensions," in <em>The Constants of Nature</em>. (New York: Random House, 2002), pp. 203-205&#160;<a class="footnote-backref" href="#fnref:barrow" rev="footnote" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
+<li id="fn:kant">
+<p>Kant, Immanuel, "Thoughts on the true estimation of living forces" in <em>Kant: Natural Science</em>, ed. Eric Watkins. 1st ed. (Cambridge: Cambridge University Press, 2012). pp. 26-28. Cambridge Books Online. Web. 10 September 2014. http://dx.doi.org/10.1017/CBO9781139014380.004&#160;<a class="footnote-backref" href="#fnref:kant" rev="footnote" title="Jump back to footnote 2 in the text">&#8617;</a></p>
+</li>
+<li id="fn:ehrenfest">
+<p>Ehrenfest, Paul. "In what way does it become manifest in the fundamental laws of physics that space has three dimensions." Proc. Royal Netherlands Acad. Arts Sci 20 (1917): 200-209.&#160;<a class="footnote-backref" href="#fnref:ehrenfest" rev="footnote" title="Jump back to footnote 3 in the text">&#8617;</a></p>
+</li>
+<li id="fn:convention">
+<p>By <a href="http://mathworld.wolfram.com/Hypersphere.html">geometer's conventions</a>. A topologist would call a 3D sphere a 2-sphere, as the surface has two dimensions.&#160;<a class="footnote-backref" href="#fnref:convention" rev="footnote" title="Jump back to footnote 4 in the text">&#8617;</a></p>
+</li>
+<li id="fn:equal">
+<p>To the extent that it is possible for anything else to remain the same, i.e. "probably not."&#160;<a class="footnote-backref" href="#fnref:equal" rev="footnote" title="Jump back to footnote 5 in the text">&#8617;</a></p>
+</li>
+<li id="fn:misc">
+<p>2D and 3D spaces have many other special properties. See Ehrenfest (above) about rotation and wave propagation, Polya's work on the random walk on 2D, and Bertrand's Theorem.&#160;<a class="footnote-backref" href="#fnref:misc" rev="footnote" title="Jump back to footnote 6 in the text">&#8617;</a></p>
+</li>
+</ol>
+</div>
+	<hr/>
+	<h6>Written by <a href="http://blog.iank.org/author/ian-kilgore.html">Ian Kilgore</a> in <a href="http://blog.iank.org/category/math.html">math</a> on Wed 10 September 2014. Tags: <a href="http://blog.iank.org/tag/physics.html">physics</a>, <a href="http://blog.iank.org/tag/geometry.html">geometry</a>, <a href="http://blog.iank.org/tag/kant.html">kant</a>, <a href="http://blog.iank.org/tag/math.html">math</a>, </h6>
+</article>
+
+<hr/>
+						</div>
+						<!-- End Main Content -->
+						<!-- Sidebar -->
+						<aside class="medium-3 hide-for-small-only columns">
+							<div class="panel">
+								<h5>Places</h5>
+								<ul class="side-nav">
+									<li><a href="http://blog.iank.org/">Blog</a></li>
+									<li><a href="http://blog.iank.org/pages/contact.html">Contact</a></li>
+									<li><a href="http://iank.org/">Home</a></li>
+									<li><a href="http://iank.org/projects.html">Projects</a></li>
+								</ul>
+							</div>
+
+							<div class="panel">
+								<h5>Tags</h5>
+								<ul class="tag-cloud">
+								</ul>
+							</div>
+
+
+<!--							<div class="panel">
+								<h5>Links</h5>
+								<ul class="side-nav">
+								</ul> 
+							</div> -->
+						</aside>
+						<!-- End Sidebar -->
+					</div>
+
+					<!-- Footer -->
+					<footer class="row">
+						<div class="medium-9 small-12">
+							<hr/>
+							<p class="text-center">Powered by <a href="http://getpelican.com">Pelican</a> and <a href="http://foundation.zurb.com/">Zurb Foundation</a>. Theme by <a href="http://hamaluik.com">Kenton Hamaluik</a>.</p>
+						</div>
+					</footer>
+					<!-- End Footer -->
+				</section>
+				<a class="exit-off-canvas"></a>
+			</div><!--off-canvas inner-->
+		</div><!--off-canvas wrap-->
+
+		<script src="http://blog.iank.org/theme/js/jquery.js"></script>
+		<script src="http://blog.iank.org/theme/js/foundation.min.js"></script>
+		<script>
+			$(document).foundation();
+		</script>
+	</body>
+</html>

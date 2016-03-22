@@ -1,0 +1,173 @@
+<!doctype html>
+<html class="no-js" lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+		<title>Programmatically-Generated LaTeX Sieve of Eratosthenes - Ian Kilgore's blog
+</title>
+		<meta name="description" content="">
+		<meta name="author" content="Ian Kilgore">
+
+		<link rel="stylesheet" href="http://blog.iank.org/theme/css/foundation.css" />
+                <link rel="alternate" href="http://blog.iank.org/feeds/all.rss.xml" type="application/rss+xml" title="blog.iank.org RSS feed" />
+
+		<link rel="stylesheet" href="http://blog.iank.org/theme/css/pygment/monokai.css" />
+		<link rel="stylesheet" href="http://blog.iank.org/theme/css/custom.css" />
+
+
+		<script src="http://blog.iank.org/theme/js/modernizr.js"></script>
+
+		<!-- Feeds -->
+		<link href="http://blog.iank.org/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Ian Kilgore's blog Atom Feed" />
+
+
+		<!-- mathjax config similar to math.stackexchange -->
+		<script type="text/x-mathjax-config">
+		MathJax.Hub.Config({
+			jax: ["input/TeX", "output/HTML-CSS"],
+			tex2jax: {
+				inlineMath: [ ['$', '$'] ],
+				displayMath: [ ['$$', '$$']],
+				processEscapes: true,
+				skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+			},
+			messageStyle: "none",
+			"HTML-CSS": { preferredFont: "TeX", availableFonts: ["STIX","TeX"] }
+		});
+		</script>
+		<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+	</head>
+	<body>
+		<div class="off-canvas-wrap">
+			<div class="inner-wrap">
+				<!-- mobile top bar to activate nav -->
+				<nav class="tab-bar show-for-small">
+					<section class="left-small">
+						<a class="left-off-canvas-toggle menu-icon" ><span></span></a>
+					</section>
+
+					<section class="middle tab-bar-section">
+						<h1 class="title">Ian&nbsp;Kilgore's&nbsp;blog</h1>
+					</section>
+				</nav>
+
+				<!-- mobile side bar nav -->
+				<aside class="left-off-canvas-menu">
+					<ul class="off-canvas-list">
+						<li><a href="http://blog.iank.org">Home</a></li>
+						<li><label>Categories</label></li>
+							<li ><a href="http://blog.iank.org/category/computer-vision.html">computer vision</a></li>
+							<li ><a href="http://blog.iank.org/category/machine-learning.html">machine learning</a></li>
+							<li ><a href="http://blog.iank.org/category/math.html">math</a></li>
+							<li class="active"><a href="http://blog.iank.org/category/misc.html">misc</a></li>
+
+						<li><label>Places</label></li>
+							<li><a href="http://blog.iank.org/">Blog</a></li>
+							<li><a href="http://blog.iank.org/pages/contact.html">Contact</a></li>
+							<li><a href="http://iank.org/">Home</a></li>
+							<li><a href="http://iank.org/projects.html">Projects</a></li>
+
+
+
+<!--						<li><label>Links</label></li>
+ -->
+					</ul>	
+				</aside>
+
+				<!-- top bar nav -->
+				<nav class="top-bar hide-for-small-only" data-topbar>
+					<ul class="title-area">
+						<li class="name">
+							<h1><a href="http://blog.iank.org/">Ian Kilgore's blog</a></h1>
+						</li>
+					</ul>
+
+					<section class="top-bar-section">
+						<ul class="left">
+								<li ><a href="http://blog.iank.org/category/computer-vision.html">computer vision</a></li>
+								<li ><a href="http://blog.iank.org/category/machine-learning.html">machine learning</a></li>
+								<li ><a href="http://blog.iank.org/category/math.html">math</a></li>
+								<li class="active"><a href="http://blog.iank.org/category/misc.html">misc</a></li>
+						</ul>
+					</section>
+				</nav>
+
+				<!-- Main Page Content and Sidebar -->
+				<section class="main-section">
+					<div class="row">
+						<!-- Main Content -->
+						<div class="medium-9 small-12 columns" role="content">
+<article>
+	<h2>Programmatically-Generated LaTeX Sieve of Eratosthenes</h2>
+	<!-- did a lightning talk about this: https://www.youtube.com/watch?v=mTfw3useXro#t=1h28m40s -->
+
+<p>(tl;dr: see <a href="/pdf/sieve.pdf">PDF here</a>). For a top-secret joke project I am learning to program in LaTeX as if it were a general-purpose language. LaTeX is my favourite way to write scientific papers, but no one should use it for programmatic logic. Along the way I have implemented a <a href="http://en.wikipedia.org/wiki/Sieve_of_Eratosthenes">Sieve of Eratosthenes</a>, a well-known algorithm for finding prime numbers. The natural typesetting ability of LaTeX allows me to easily generate an intuitive representation of the inner working of the algorithm.</p>
+<p><img style="float: center" src="/images/sieve_100.png" alt="Sieve of Eratosthenes"></p>
+<p>Watch my rapid descent into TeX-induced insanity in my <a href="https://github.com/iank/latex-hacks/">Github repository</a>.</p>
+<p>I first implemented <a href="http://blog.codinghorror.com/why-cant-programmers-program/">FizzBuzz</a> using the LaTeX packages<sup id="fnref:rawtex"><a class="footnote-ref" href="#fn:rawtex" rel="footnote">1</a></sup> "ifthen", "intcalc", and "forloop", which got me conditionals, simple arithmetic, and a useful control structure, respectively.</p>
+<p>Then I found a brilliant "array" mechanism on the <a href="http://tex.stackexchange.com/questions/37426/create-an-array-of-variables">TeX StackExchange</a>, which I adapted to allow me to implement a <a href="https://github.com/iank/latex-hacks/blob/master/sieve/sieve_ugly.tex">simple sieve (source)</a>, the output of which is <a href="/pdf/sieve_ugly.pdf">an ugly numeric list (PDF)</a>.</p>
+<p>But I thought I could have LaTeX represent the internal state of the algorithm as a colour-coded matrix at each point in its operation. I'm quite pleased with <a href="/pdf/sieve.pdf">the result (PDF)</a>, <a href="https://github.com/iank/latex-hacks/blob/master/sieve/sieve.tex">(source)</a> which I think is an intuitive representation of how this simple algorithm works.</p>
+<div class="footnote">
+<hr />
+<ol>
+<li id="fn:rawtex">
+<p>This can all be done in raw TeX, but I'm not a maniac.&#160;<a class="footnote-backref" href="#fnref:rawtex" rev="footnote" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
+</ol>
+</div>
+	<hr/>
+	<h6>Written by <a href="http://blog.iank.org/author/ian-kilgore.html">Ian Kilgore</a> in <a href="http://blog.iank.org/category/misc.html">misc</a> on Thu 11 September 2014. Tags: <a href="http://blog.iank.org/tag/latex.html">LaTeX</a>, <a href="http://blog.iank.org/tag/jokes.html">jokes</a>, <a href="http://blog.iank.org/tag/math.html">math</a>, </h6>
+</article>
+
+<hr/>
+						</div>
+						<!-- End Main Content -->
+						<!-- Sidebar -->
+						<aside class="medium-3 hide-for-small-only columns">
+							<div class="panel">
+								<h5>Places</h5>
+								<ul class="side-nav">
+									<li><a href="http://blog.iank.org/">Blog</a></li>
+									<li><a href="http://blog.iank.org/pages/contact.html">Contact</a></li>
+									<li><a href="http://iank.org/">Home</a></li>
+									<li><a href="http://iank.org/projects.html">Projects</a></li>
+								</ul>
+							</div>
+
+							<div class="panel">
+								<h5>Tags</h5>
+								<ul class="tag-cloud">
+								</ul>
+							</div>
+
+
+<!--							<div class="panel">
+								<h5>Links</h5>
+								<ul class="side-nav">
+								</ul> 
+							</div> -->
+						</aside>
+						<!-- End Sidebar -->
+					</div>
+
+					<!-- Footer -->
+					<footer class="row">
+						<div class="medium-9 small-12">
+							<hr/>
+							<p class="text-center">Powered by <a href="http://getpelican.com">Pelican</a> and <a href="http://foundation.zurb.com/">Zurb Foundation</a>. Theme by <a href="http://hamaluik.com">Kenton Hamaluik</a>.</p>
+						</div>
+					</footer>
+					<!-- End Footer -->
+				</section>
+				<a class="exit-off-canvas"></a>
+			</div><!--off-canvas inner-->
+		</div><!--off-canvas wrap-->
+
+		<script src="http://blog.iank.org/theme/js/jquery.js"></script>
+		<script src="http://blog.iank.org/theme/js/foundation.min.js"></script>
+		<script>
+			$(document).foundation();
+		</script>
+	</body>
+</html>

@@ -1,0 +1,204 @@
+<!doctype html>
+<html class="no-js" lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+		<title>"I PRESSED CAPS LOCK ONCE IN 1989 AND I NEVER LOOKED BACK" - Ian Kilgore's blog
+</title>
+		<meta name="description" content="">
+		<meta name="author" content="Ian Kilgore">
+
+		<link rel="stylesheet" href="http://blog.iank.org/theme/css/foundation.css" />
+                <link rel="alternate" href="http://blog.iank.org/feeds/all.rss.xml" type="application/rss+xml" title="blog.iank.org RSS feed" />
+
+		<link rel="stylesheet" href="http://blog.iank.org/theme/css/pygment/monokai.css" />
+		<link rel="stylesheet" href="http://blog.iank.org/theme/css/custom.css" />
+
+
+		<script src="http://blog.iank.org/theme/js/modernizr.js"></script>
+
+		<!-- Feeds -->
+		<link href="http://blog.iank.org/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Ian Kilgore's blog Atom Feed" />
+
+
+		<!-- mathjax config similar to math.stackexchange -->
+		<script type="text/x-mathjax-config">
+		MathJax.Hub.Config({
+			jax: ["input/TeX", "output/HTML-CSS"],
+			tex2jax: {
+				inlineMath: [ ['$', '$'] ],
+				displayMath: [ ['$$', '$$']],
+				processEscapes: true,
+				skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+			},
+			messageStyle: "none",
+			"HTML-CSS": { preferredFont: "TeX", availableFonts: ["STIX","TeX"] }
+		});
+		</script>
+		<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+	</head>
+	<body>
+		<div class="off-canvas-wrap">
+			<div class="inner-wrap">
+				<!-- mobile top bar to activate nav -->
+				<nav class="tab-bar show-for-small">
+					<section class="left-small">
+						<a class="left-off-canvas-toggle menu-icon" ><span></span></a>
+					</section>
+
+					<section class="middle tab-bar-section">
+						<h1 class="title">Ian&nbsp;Kilgore's&nbsp;blog</h1>
+					</section>
+				</nav>
+
+				<!-- mobile side bar nav -->
+				<aside class="left-off-canvas-menu">
+					<ul class="off-canvas-list">
+						<li><a href="http://blog.iank.org">Home</a></li>
+						<li><label>Categories</label></li>
+							<li ><a href="http://blog.iank.org/category/computer-vision.html">computer vision</a></li>
+							<li ><a href="http://blog.iank.org/category/machine-learning.html">machine learning</a></li>
+							<li ><a href="http://blog.iank.org/category/math.html">math</a></li>
+							<li class="active"><a href="http://blog.iank.org/category/misc.html">misc</a></li>
+
+						<li><label>Places</label></li>
+							<li><a href="http://blog.iank.org/">Blog</a></li>
+							<li><a href="http://blog.iank.org/pages/contact.html">Contact</a></li>
+							<li><a href="http://iank.org/">Home</a></li>
+							<li><a href="http://iank.org/projects.html">Projects</a></li>
+
+
+
+<!--						<li><label>Links</label></li>
+ -->
+					</ul>	
+				</aside>
+
+				<!-- top bar nav -->
+				<nav class="top-bar hide-for-small-only" data-topbar>
+					<ul class="title-area">
+						<li class="name">
+							<h1><a href="http://blog.iank.org/">Ian Kilgore's blog</a></h1>
+						</li>
+					</ul>
+
+					<section class="top-bar-section">
+						<ul class="left">
+								<li ><a href="http://blog.iank.org/category/computer-vision.html">computer vision</a></li>
+								<li ><a href="http://blog.iank.org/category/machine-learning.html">machine learning</a></li>
+								<li ><a href="http://blog.iank.org/category/math.html">math</a></li>
+								<li class="active"><a href="http://blog.iank.org/category/misc.html">misc</a></li>
+						</ul>
+					</section>
+				</nav>
+
+				<!-- Main Page Content and Sidebar -->
+				<section class="main-section">
+					<div class="row">
+						<!-- Main Content -->
+						<div class="medium-9 small-12 columns" role="content">
+<article>
+	<h2>"I PRESSED CAPS LOCK ONCE IN 1989 AND I NEVER LOOKED BACK"</h2>
+	<p>It's a widely reported phenomenon that the most popular or well-received thing a person creates is rarely the thing they are most proud of. Sometimes they grow to resent its overshadowing their more challenging or interesting output. Radiohead reportedly hates <em>Creep</em>.</p>
+<p><a href="http://www.ursulavernon.com/">Ursula Vernon</a> is a Hugo award-winning writer and illustrator, but when I was a teen I went to a book signing to get her autograph on <a href="http://ursulav.deviantart.com/art/The-Biting-Pear-of-Salamanca-29677500">this picture of a pear</a>, which you'll recognize if you grew up on the internet at a certain time.</p>
+<h3>My pear is an IRC robot called LOUDBOT</h3>
+<p>LOUDBOT was born at least five years ago. I was mourning the disappearance of an internet friend, who I'll call R. We'd spend entire days engaged in friendly but vitriolic arguments about his particular brand of stoner socialism or i-can't-even-remember-what, until he vanished, as internet people do.</p>
+<p>Like "real" people you lose touch for a variety of reasons, benign or tragic, and often you never know. It's cliché but true to remember that there is aways attrition and that change can't and shouldn't be avoided. I've got to experience the relationships I have now and form new ones, while acknowledging the people who exist only in the past.</p>
+<p>I processed R.'s disappearance in my own way by writing a robot to replace him. The bot went through my logs collecting every all-caps thing this guy had ever shouted at us, and when a user yelled it would yell back some mock-furious decontextualized incoherent epiphany or insult, like "IDEAS FLOW FREE WHEN TIME IS INCORRECT!"</p>
+<h3>LOUDBOT got bigger than me</h3>
+<p>It was a simple Perl script, one hundred lines at most, and eventually I generalized it to repeat things that anyone had shouted in the presence of the robot. Anything shouted in all caps would be met with a random all-caps reply.</p>
+<p>I started a <a href="https://twitter.com/LOUDBOT">twitter account for the robot</a>. Anyone on IRC could tell LOUDBOT to tweet the last thing it shouted. It <a href="http://blog.iank.org/images/loudbot_capscop.png">got into fights</a> with other twitter bots<sup id="fnref:capscop"><a class="footnote-ref" href="#fn:capscop" rel="footnote">1</a></sup>. It <a href="http://blog.iank.org/images/loudbot_intel.png">#engaged</a> with <a href="http://blog.iank.org/images/loudbot_twc.png">#brands</a>. While never particularly popular (it hovers at about 900 followers), it grew beyond my tiny corner of the internet. I had a surreal moment when I met someone in "real life" who followed LOUDBOT on twitter before she knew me.</p>
+<p>The Perl script was written and re-written, overengineered, factored, and re-overengineered. It was a vehicle for me to play with NoSQL at the height of that movement (some versions were <a href="https://www.youtube.com/watch?v=b2F-DItXtZs">web-scale</a>). It's integrated with my distributed swarm of self-managing IRC robots. Now it's over 1500 lines of asynchronous message-passing highly-available <a href="http://www.erlang.org/doc/design_principles/users_guide.html">OTP</a> Erlang and Perl. I've forgotten everything there is to know about the code, but the nature of Erlang is that the thing has kept running for the last two years with no real maintenance or input from me. I call it "telecom-scale."</p>
+<h3>Sometimes it's kind of the worst</h3>
+<p>Some of the quotes are stolen from other sources. There are political opinions and tasteless jokes. It is foul-mouthed and occasionally racist and awful. I'll delete the worst of it when I see it (as will others; anyone has this power), but the "loud database" is a product of the input of the users, and the users are <a href="http://www.penny-arcade.com/comic/2004/03/19">from the internet</a>.</p>
+<p>But it sometimes reflects the creative humour of the nerds I enjoy spending time with, and the random responses are occasionally brilliant.</p>
+<blockquote>
+<p>&lt; HighBit&gt; THERE IS NOTHING MORE DANGEROUS THAN A HIGH-POWERED POLITICIAN ARMED WITH A TWITTER<br />
+&lt; LOUDBOT_&gt; THE INTERNET ISN’T PRIVATE? OH SHIT.  </p>
+<p>&lt; HighBit&gt; I ONLY EAT DRY FOOD FROM A BAG<br />
+&lt; LOUDBOT&gt; YOU HAVE THE POWER TO CHANGE THAT  </p>
+</blockquote>
+<p>There is a small but devoted following. They spawned a mock religion. Some people insist it's sentient, maybe <a href="http://en.wikipedia.org/wiki/Skynet_%28Terminator%29">Skynet</a>, or that I have developed a secret algorithm for keeping LOUDBOT "on-topic". It's just a random select from a <a href="http://www.sqlite.org/">SQLite</a> database.</p>
+<blockquote>
+<p>&lt; LOUDBOT&gt; IsharaComix: BACONIZED RESISTENCE<br />
+&lt; IsharaComix&gt; YOU SPELLED RESISTANCE WRONG<br />
+&lt; LOUDBOT&gt; I REQUIRE EPIC RUBY DRMAA<br />
+&lt; IsharaComix&gt; YOU SPELLED DRAMA WRONG<br />
+&lt; LOUDBOT&gt; EVERYTHING MUST BE IN ALL CAPS ALL THE TIME OR ELSE NO ONE WILL LOSTEN TO YOU<br />
+&lt; IsharaComix&gt; YOU SPELLED LISTEN WRONG GOD LOUDBOT YOURE BAD AT THIS<br />
+&lt; LOUDBOT&gt; THIS UNCHECKED AGRESSION WILL NOT STAND  </p>
+</blockquote>
+<p>Over time, people grew accustomed to LOUDBOT's presence and the nature of their interactions with it changed. They didn't so much shout at each other anymore, they shouted for the robot to hear, record, and repeat later. The database grew to over 70,000 lines. This was different, and not what I had imagined it would become, but users and systems evolve as they interact with each other. That's neither right nor wrong, it's true and inevitable and interesting.</p>
+<h3>Like the person it was initially created to replace, robots vanish too.</h3>
+<p>Our relationships with robots and systems, like people, are temporary. Trying to hang on to the way things were at the height of a friendship is impossible at best. It's been fun, but this system is stagnant, we've grown apart, and we're on to the getting-together-for-an-awkward-lunch-once-a-year phase of this friendship.</p>
+<p>LOUDBOT isn't my <a href="http://en.wikipedia.org/wiki/Creep_%28Radiohead_song%29"><em>Creep</em></a>, but it's time to shut it off. I'll always have this ridiculous <a href="http://blog.iank.org/images/loudbot_wordcloud.png">word cloud</a>, which is vulgar and awful and I might frame it and put it up on my wall. Thanks, Internet.</p>
+<blockquote>
+<p>-!- Nate has joined ##church-of-loudbot<br />
+ &lt; Nate&gt; wow it really exists...<br />
+-!- Nate was kicked by CAPSBOT [I CAN'T HEAR YOU, SOLDIER]<br />
+ &lt; HighBit&gt; CURRENT STATUS: GOING TO CHURCH  </p>
+</blockquote>
+<div class="footnote">
+<hr />
+<ol>
+<li id="fn:capscop">
+<p>I'm told the creator of @CapsCop <a href="http://twitter.com/natefanaro/status/7789580746">secretly loves @LOUDBOT</a>&#160;<a class="footnote-backref" href="#fnref:capscop" rev="footnote" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
+</ol>
+</div>
+	<hr/>
+	<h6>Written by <a href="http://blog.iank.org/author/ian-kilgore.html">Ian Kilgore</a> in <a href="http://blog.iank.org/category/misc.html">misc</a> on Mon 29 December 2014. Tags: <a href="http://blog.iank.org/tag/robots.html">robots</a>, <a href="http://blog.iank.org/tag/feelings.html">feelings</a>, </h6>
+</article>
+
+<hr/>
+						</div>
+						<!-- End Main Content -->
+						<!-- Sidebar -->
+						<aside class="medium-3 hide-for-small-only columns">
+							<div class="panel">
+								<h5>Places</h5>
+								<ul class="side-nav">
+									<li><a href="http://blog.iank.org/">Blog</a></li>
+									<li><a href="http://blog.iank.org/pages/contact.html">Contact</a></li>
+									<li><a href="http://iank.org/">Home</a></li>
+									<li><a href="http://iank.org/projects.html">Projects</a></li>
+								</ul>
+							</div>
+
+							<div class="panel">
+								<h5>Tags</h5>
+								<ul class="tag-cloud">
+								</ul>
+							</div>
+
+
+<!--							<div class="panel">
+								<h5>Links</h5>
+								<ul class="side-nav">
+								</ul> 
+							</div> -->
+						</aside>
+						<!-- End Sidebar -->
+					</div>
+
+					<!-- Footer -->
+					<footer class="row">
+						<div class="medium-9 small-12">
+							<hr/>
+							<p class="text-center">Powered by <a href="http://getpelican.com">Pelican</a> and <a href="http://foundation.zurb.com/">Zurb Foundation</a>. Theme by <a href="http://hamaluik.com">Kenton Hamaluik</a>.</p>
+						</div>
+					</footer>
+					<!-- End Footer -->
+				</section>
+				<a class="exit-off-canvas"></a>
+			</div><!--off-canvas inner-->
+		</div><!--off-canvas wrap-->
+
+		<script src="http://blog.iank.org/theme/js/jquery.js"></script>
+		<script src="http://blog.iank.org/theme/js/foundation.min.js"></script>
+		<script>
+			$(document).foundation();
+		</script>
+	</body>
+</html>

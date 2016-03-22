@@ -1,0 +1,224 @@
+<!doctype html>
+<html class="no-js" lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+		<title>PCA on X-Plane Images - Ian Kilgore's blog
+</title>
+		<meta name="description" content="">
+		<meta name="author" content="Ian Kilgore">
+
+		<link rel="stylesheet" href="http://blog.iank.org/theme/css/foundation.css" />
+                <link rel="alternate" href="http://blog.iank.org/feeds/all.rss.xml" type="application/rss+xml" title="blog.iank.org RSS feed" />
+
+		<link rel="stylesheet" href="http://blog.iank.org/theme/css/pygment/monokai.css" />
+		<link rel="stylesheet" href="http://blog.iank.org/theme/css/custom.css" />
+
+
+		<script src="http://blog.iank.org/theme/js/modernizr.js"></script>
+
+		<!-- Feeds -->
+		<link href="http://blog.iank.org/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Ian Kilgore's blog Atom Feed" />
+
+
+		<!-- mathjax config similar to math.stackexchange -->
+		<script type="text/x-mathjax-config">
+		MathJax.Hub.Config({
+			jax: ["input/TeX", "output/HTML-CSS"],
+			tex2jax: {
+				inlineMath: [ ['$', '$'] ],
+				displayMath: [ ['$$', '$$']],
+				processEscapes: true,
+				skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+			},
+			messageStyle: "none",
+			"HTML-CSS": { preferredFont: "TeX", availableFonts: ["STIX","TeX"] }
+		});
+		</script>
+		<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+	</head>
+	<body>
+		<div class="off-canvas-wrap">
+			<div class="inner-wrap">
+				<!-- mobile top bar to activate nav -->
+				<nav class="tab-bar show-for-small">
+					<section class="left-small">
+						<a class="left-off-canvas-toggle menu-icon" ><span></span></a>
+					</section>
+
+					<section class="middle tab-bar-section">
+						<h1 class="title">Ian&nbsp;Kilgore's&nbsp;blog</h1>
+					</section>
+				</nav>
+
+				<!-- mobile side bar nav -->
+				<aside class="left-off-canvas-menu">
+					<ul class="off-canvas-list">
+						<li><a href="http://blog.iank.org">Home</a></li>
+						<li><label>Categories</label></li>
+							<li ><a href="http://blog.iank.org/category/computer-vision.html">computer vision</a></li>
+							<li class="active"><a href="http://blog.iank.org/category/machine-learning.html">machine learning</a></li>
+							<li ><a href="http://blog.iank.org/category/math.html">math</a></li>
+							<li ><a href="http://blog.iank.org/category/misc.html">misc</a></li>
+
+						<li><label>Places</label></li>
+							<li><a href="http://blog.iank.org/">Blog</a></li>
+							<li><a href="http://blog.iank.org/pages/contact.html">Contact</a></li>
+							<li><a href="http://iank.org/">Home</a></li>
+							<li><a href="http://iank.org/projects.html">Projects</a></li>
+
+
+
+<!--						<li><label>Links</label></li>
+ -->
+					</ul>	
+				</aside>
+
+				<!-- top bar nav -->
+				<nav class="top-bar hide-for-small-only" data-topbar>
+					<ul class="title-area">
+						<li class="name">
+							<h1><a href="http://blog.iank.org/">Ian Kilgore's blog</a></h1>
+						</li>
+					</ul>
+
+					<section class="top-bar-section">
+						<ul class="left">
+								<li ><a href="http://blog.iank.org/category/computer-vision.html">computer vision</a></li>
+								<li class="active"><a href="http://blog.iank.org/category/machine-learning.html">machine learning</a></li>
+								<li ><a href="http://blog.iank.org/category/math.html">math</a></li>
+								<li ><a href="http://blog.iank.org/category/misc.html">misc</a></li>
+						</ul>
+					</section>
+				</nav>
+
+				<!-- Main Page Content and Sidebar -->
+				<section class="main-section">
+					<div class="row">
+						<!-- Main Content -->
+						<div class="medium-9 small-12 columns" role="content">
+<article>
+	<h2>PCA on X-Plane Images</h2>
+	<h3>Problem</h3>
+<p>As a demonstration of a multivariate analysis technique I have formulated a classification task:</p>
+<blockquote>
+<p>Given screenshots of a cockpit in the flight simulator <a href="http://www.x-plane.com/">X-Plane</a>, discriminate between left and right banking.</p>
+</blockquote>
+<p><a href="/images/pca/screenshot_49.png"><img alt="Example Screenshot Indicating Right Bank" src="/images/pca/screenshot_49_thumb.png" title="Example Screenshot Indicating Right Bank" /></a>
+<a href="/images/pca/screenshot_119.png"><img alt="Example Screenshot Indicating Left Bank" src="/images/pca/screenshot_119_thumb.png" title="Example Screenshot Indicating Left Bank" /></a></p>
+<h3>Method</h3>
+<h4>Data and Preprocessing</h4>
+<p>$$n=101 \text{ screenshots}$$ were taken at various points during simulated left and right turns, then hand-labelled as either 'left' or 'right'. These screenshots are 1180x800 8-bit RGB images, which can be represented using $$1180 \cdot 800 \cdot 3 = 2,832,000 \text{ values}$$</p>
+<p>If we are to use these images as feature vector inputs to a supervised learner, we find that 2.8 million-dimensional vectors are too large for practical applications.</p>
+<p>As an initial step, we may remove some redundancy in these images by converting them to 118x80 grayscale:</p>
+<blockquote>
+<p>09:44 &lt; ik&gt; ik's principled guide to multivariate analysis: if the data is too big, just throw away a lot of it</p>
+</blockquote>
+<p>This leaves us with screenshots resembling the following low-resolution grayscale images. These images can be represented as 9440-dimensional feature vectors, which are still rather large.</p>
+<p><img alt="Example Screenshot Indicating Right Bank" src="/images/pca/right_49.png" title="Example Screenshot Indicating Right Bank" />
+<img alt="Example Screenshot Indicating Left Bank" src="/images/pca/left_119.png" title="Example Screenshot Indicating Left Bank" /></p>
+<p>It is clear that these images still exhibit much redundancy. The cockpit interior, for instance, is mostly either constant across all images (the cowling and blank space between instruments), or noise (most of the instruments vary between screenshots but are not useful for determining bank direction). The sky is mostly featureless and the ground is noise (we do not care if we are looking at a runway or a pasture). The only element of these images we are interested in is the horizon (and possibly the artificial horizon instrument and the turn coordinator).</p>
+<p>I made this problem easy by selecting only screenshots where the horizon was visible (ie, some sky and some ground was visible in each picture). So the slope of the horizon is a sufficient statistic for our task. (Had this not been the case, we would want to focus on the artificial horizon instrument).</p>
+<p>We can, of course, write some heuristic to extract the important information from these images, but there is a general method.</p>
+<h4>Principal Component Analysis</h4>
+<p>Much has been written about <a href="https://en.wikipedia.org/wiki/Principal_component_analysis">PCA</a>, so this section will only summarize the technique as I have implemented it in the solving of this problem. Here, we use PCA for dimensionality reduction: By selecting only the first s principal components, we can transform our d-dimensional data X to a s-dimensional subspace while retaining most of the variance of the data (thereby discarding some correlated variables (ie, redundancy) and noise). Of course, d &gt;&gt; s.</p>
+<p>Given n observations of d-dimensional data X (the values of X are, in this case, pixel intensities represented as integers ranging from 0 to 255):</p>
+<p>$$\mathbf{X}_{n \times d}$$</p>
+<p>We take the mean of each column and subtract from the data:</p>
+<p>\begin{equation}
+\mathbf{\Psi} = \frac{1}{n}\sum\limits_{i=1}^n \vec{x}_i
+\end{equation}
+\begin{equation}
+\mathbf{\Phi} = \mathbf{X} - \mathbf{\Psi}
+\end{equation}</p>
+<p>A covariance matrix is computed:
+\begin{equation}
+\mathbf{C} = \mathbf{\Phi}^\top\mathbf{\Phi}
+\end{equation}</p>
+<p>Note that this covariance matrix can be very large (d-by-d or, in our case, 9440 by 9440). In practise, <a href="https://en.wikipedia.org/wiki/Principal_component_analysis#The_NIPALS_method">other methods</a> are used to find the first few principal components without computing the entire covariance matrix.</p>
+<p>We find the eigenvalues and eigenvectors of the covariance matrix such that:</p>
+<p>\begin{equation}
+\mathbf{V}^{-1}\mathbf{C}\mathbf{V} = \mathbf{\Lambda}
+\end{equation}</p>
+<p>where V is a matrix of d column vectors corresponding to the d eigenvectors of C, and Λ is a diagonal matrix with the d corresponding eigenvalues on its diagonal.</p>
+<p>We can think of the high-eigenvalued eigenvectors as modelling the signal subspace in our data, and the low-eigenvalued eigenvectors as modelling the noise subspace. Alternatively we can think of the high-eigenvalued eigenvectors as <em>axes</em> along which our data has much variance. If we sort the eigenvalues and plot them, we have:</p>
+<p><img alt="Eigenvalues of Covariance Matrix" src="/images/pca/values.png" title="Eigenvalues of Covariance Matrix" /></p>
+<p>Note that I have zoomed in on the first fifty or so eigenvalues so as to show some detail. In reality there are 9440 of them. In most applications, the contrast between high values and low values is not nearly so sharp. So we have a good cutoff point, and we see that there are relatively few high eigenvalues, suggesting that the data is mostly correlated.</p>
+<p>While it may be advisable to select a few more, I let s = 2 to allow for visualization. So we take the two highest-eigenvalued eigenvectors and create a matrix which we can use to transform our data:</p>
+<p>\begin{equation}
+\mathbf{U}_{d \times 2} = [\begin{array}{cc} \vec{\lambda}_1 &amp; \vec{\lambda}_2 \end{array}]
+\end{equation}</p>
+<p>\begin{equation}
+\mathbf{U}_{d \times 2} = [\begin{array}{cc} \vec{\lambda}_1 &amp; \vec{\lambda}_2 \end{array}]
+\end{equation}</p>
+<p>We may now project our data into this two-dimensional space and plot it:</p>
+<p>\begin{equation}
+\mathbf{X}_f = (\mathbf{X} - \mathbf{\Psi})\times\mathbf{U}^\top
+\end{equation}</p>
+<p><img alt="X-Plane screenshots mapped onto two-dimensional space" src="/images/pca/2value.png" title="X-Plane screenshots mapped onto two-dimensional space" /></p>
+<p>I have plotted data points corresponding to each class ('left', 'right') with different colours. So we see that even with only two principal components we can achieve fairly good separation (even a linear classifier would do well here).</p>
+<h3>Results</h3>
+<p>Returning to our original problem. Given n observations of d-dimensional data X (screenshots) we should like to predict the class labels Y corresponding to 'right' and 'left' bank:</p>
+<p>$$\mathbf{X}_{n \times d}, \; \vec{Y}_n$$</p>
+<p>Using <a href="http://sugiyama-www.cs.titech.ac.jp/~sugi/2010/LSPC.pdf">LSPC</a>, a fast non-linear supervised classifier, we may attempt to separate this data. I used 75 screenshots to train, and withheld 26 for testing.</p>
+<p>By training LSPC on these 75 screenshots (projected into two dimensions), we find functions which estimate the posterior probability that a screenshot is a member of class Y = 1 or 2.</p>
+<p>$$\text{find } \hat{P}(Y=1|x_i); \hat{P}(Y=2|x_i)$$</p>
+<p>The estimated posterior probabilities are plotted as a heatmap over the two-dimensional data (this plot actually shows the training data, not the withheld test data). We make our decision at P(Y|x) = 0.5</p>
+<p><img alt="Estimated posterior probability (decision boundary = 0.5)" src="/images/pca/boundary.png" title="&quot;Estimated posterior probability (decisioun boundary = 0.5" /></p>
+<p>Using this model we estimate the class label for our 26 withheld examples and find that it correctly classified 25 of the 26 screenshots (corresponding to an error rate of about 3.85%).</p>
+	<hr/>
+	<h6>Written by <a href="http://blog.iank.org/author/ian-kilgore.html">Ian Kilgore</a> in <a href="http://blog.iank.org/category/machine-learning.html">machine learning</a> on Sun 21 July 2013. Tags: <a href="http://blog.iank.org/tag/computer-math.html">computer math</a>, <a href="http://blog.iank.org/tag/pca.html">PCA</a>, <a href="http://blog.iank.org/tag/machine-learning.html">machine learning</a>, <a href="http://blog.iank.org/tag/lspc.html">LSPC</a>, </h6>
+</article>
+
+<hr/>
+						</div>
+						<!-- End Main Content -->
+						<!-- Sidebar -->
+						<aside class="medium-3 hide-for-small-only columns">
+							<div class="panel">
+								<h5>Places</h5>
+								<ul class="side-nav">
+									<li><a href="http://blog.iank.org/">Blog</a></li>
+									<li><a href="http://blog.iank.org/pages/contact.html">Contact</a></li>
+									<li><a href="http://iank.org/">Home</a></li>
+									<li><a href="http://iank.org/projects.html">Projects</a></li>
+								</ul>
+							</div>
+
+							<div class="panel">
+								<h5>Tags</h5>
+								<ul class="tag-cloud">
+								</ul>
+							</div>
+
+
+<!--							<div class="panel">
+								<h5>Links</h5>
+								<ul class="side-nav">
+								</ul> 
+							</div> -->
+						</aside>
+						<!-- End Sidebar -->
+					</div>
+
+					<!-- Footer -->
+					<footer class="row">
+						<div class="medium-9 small-12">
+							<hr/>
+							<p class="text-center">Powered by <a href="http://getpelican.com">Pelican</a> and <a href="http://foundation.zurb.com/">Zurb Foundation</a>. Theme by <a href="http://hamaluik.com">Kenton Hamaluik</a>.</p>
+						</div>
+					</footer>
+					<!-- End Footer -->
+				</section>
+				<a class="exit-off-canvas"></a>
+			</div><!--off-canvas inner-->
+		</div><!--off-canvas wrap-->
+
+		<script src="http://blog.iank.org/theme/js/jquery.js"></script>
+		<script src="http://blog.iank.org/theme/js/foundation.min.js"></script>
+		<script>
+			$(document).foundation();
+		</script>
+	</body>
+</html>
