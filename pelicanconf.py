@@ -42,3 +42,6 @@ STATIC_PATHS = ['images', 'pdf', 'extra']
 EXTRA_PATH_METADATA = {
     'extra/robots.txt': {'path': 'robots.txt'},
 }
+
+PLUGIN_PATHS = ["plugins"]
+PLUGINS = ["tag_cloud"]
