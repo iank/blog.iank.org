@@ -1,6 +1,0 @@
-# Hi, robo-friends!
-
-User-agent: *
-Disallow: 
-
-
