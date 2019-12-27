@@ -8,7 +8,7 @@ SITEURL = 'http://blog.iank.org'
 
 PATH = 'content'
 
-TIMEZONE = 'America/New_York'
+TIMEZONE = 'America/Denver'
 
 DEFAULT_LANG = u'en'
 
@@ -23,9 +23,9 @@ CATEGORY_FEED_RSS = 'feeds/%s.rss.xml'
 # Blogroll
 LINKS = (('Blog', 'http://blog.iank.org/'),
          ('Contact', 'http://blog.iank.org/pages/contact.html'),
-         ('Home', 'http://iank.org/'),
+#         ('Home', 'http://iank.org/'),
 #         ('Résumé', 'http://iank.org/kilgore_resume.pdf'),
-         ('Projects', 'http://iank.org/projects.html'),)
+         ('Old Projects', 'http://iank.org/projects.html'),)
 
 # Social widget
 #SOCIAL = (('You can add links in your config file', '#'),
